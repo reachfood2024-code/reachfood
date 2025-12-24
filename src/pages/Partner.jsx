@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Partner() {
+  const { t, isRTL } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -20,52 +22,59 @@ export default function Partner() {
   };
 
   const partnerTypes = [
-    { value: 'distributor', label: 'Distributor' },
-    { value: 'retailer', label: 'Retailer' },
-    { value: 'research', label: 'Research Institution' },
-    { value: 'ngo', label: 'NGO / Humanitarian Organization' },
-    { value: 'government', label: 'Government Agency' },
-    { value: 'other', label: 'Other' }
+    { value: 'distributor', label: t('partner.distributor') },
+    { value: 'retailer', label: t('partner.retailer') },
+    { value: 'research', label: t('partner.research') },
+    { value: 'ngo', label: t('partner.ngo') },
+    { value: 'government', label: t('partner.government') },
+    { value: 'other', label: t('partner.other') }
   ];
 
   const opportunities = [
     {
-      title: 'Regional Expansion',
-      description: 'Direct presence in local markets plus strong online reach.'
+      title: t('partner.regionalExpansion'),
+      description: t('partner.regionalExpansionDesc')
     },
     {
-      title: 'Local Flavors, Global Standards',
-      description: 'We design products around local crops and traditional tastes, while ensuring international quality.'
+      title: t('partner.localFlavors'),
+      description: t('partner.localFlavorsDesc')
     },
     {
-      title: 'Shared Values',
-      description: 'We are driven by impact, sustainability, and long term collaboration.'
+      title: t('partner.sharedValues'),
+      description: t('partner.sharedValuesDesc')
     }
+  ];
+
+  const partnerCategories = [
+    { title: t('partner.distributors'), desc: t('partner.distributorsDesc') },
+    { title: t('partner.retailers'), desc: t('partner.retailersDesc') },
+    { title: t('partner.researchInstitutions'), desc: t('partner.researchInstitutionsDesc') },
+    { title: t('partner.ngos'), desc: t('partner.ngosDesc') },
+    { title: t('partner.governmentAgencies'), desc: t('partner.governmentAgenciesDesc') },
+    { title: t('partner.foodServiceProviders'), desc: t('partner.foodServiceProvidersDesc') }
   ];
 
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <section className="relative py-24 lg:py-32 bg-gradient-to-br from-cream via-white to-primary/5 overflow-hidden">
-        <div className="absolute top-20 right-20 w-64 h-64 border-4 border-primary/10 rounded-full" />
-        <div className="absolute bottom-20 left-10 w-40 h-40 bg-teal/5 rotate-45" />
+        <div className={`absolute top-20 ${isRTL ? 'left-20' : 'right-20'} w-64 h-64 border-4 border-primary/10 rounded-full`} />
+        <div className={`absolute bottom-20 ${isRTL ? 'right-10' : 'left-10'} w-40 h-40 bg-teal/5 rotate-45`} />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/3 rounded-full blur-3xl" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="text-center max-w-4xl mx-auto">
+          <div className={`text-center max-w-4xl mx-auto ${isRTL ? 'text-right' : ''}`}>
             <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-4">
-              Partnership Opportunities
+              {t('partner.tagline')}
             </p>
             <h1 className="font-playfair text-5xl lg:text-7xl font-bold text-heading mb-6">
-              Grow With Us
+              {t('partner.title')}
             </h1>
             <p className="text-2xl lg:text-3xl text-primary font-medium mb-8">
-              Become a Strategic Partner
+              {t('partner.subtitle')}
             </p>
             <p className="text-lg lg:text-xl text-heading-light max-w-3xl mx-auto leading-relaxed">
-              We are actively seeking visionary partners to join our mission. By combining your reach
-              and expertise with our innovation, we can unlock new markets and deliver sustainable
-              food solutions at scale.
+              {t('partner.heroDescription')}
             </p>
           </div>
         </div>
@@ -74,12 +83,12 @@ export default function Partner() {
       {/* Partnership Opportunities */}
       <section className="py-20 lg:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className={`text-center mb-16 ${isRTL ? 'text-right' : ''}`}>
             <h2 className="font-playfair text-4xl lg:text-5xl font-bold text-heading mb-4">
-              Why Partner With Us
+              {t('partner.whyPartner')}
             </h2>
             <p className="text-heading-light text-lg max-w-2xl mx-auto">
-              Together we can create meaningful impact while building sustainable business growth
+              {t('partner.whyPartnerDesc')}
             </p>
           </div>
 
@@ -87,9 +96,9 @@ export default function Partner() {
             {opportunities.map((opportunity, index) => (
               <div
                 key={index}
-                className="bg-cream rounded-3xl p-8 hover:shadow-xl transition-all duration-500 hover:-translate-y-2"
+                className={`bg-cream rounded-3xl p-8 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 ${isRTL ? 'text-right' : ''}`}
               >
-                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6">
+                <div className={`w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 ${isRTL ? 'mr-0 ml-auto' : ''}`}>
                   <span className="text-primary text-2xl font-bold">{index + 1}</span>
                 </div>
                 <h3 className="font-playfair text-2xl font-semibold text-heading mb-4">
@@ -107,27 +116,20 @@ export default function Partner() {
       {/* Partner Types */}
       <section className="py-20 lg:py-28 bg-gradient-to-br from-primary/5 to-teal/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className={`text-center mb-16 ${isRTL ? 'text-right' : ''}`}>
             <h2 className="font-playfair text-4xl lg:text-5xl font-bold text-heading mb-4">
-              Who We're Looking For
+              {t('partner.whoLookingFor')}
             </h2>
             <p className="text-heading-light text-lg max-w-2xl mx-auto">
-              Whether you're a distributor, retailer, or research institution — we welcome partners who share our vision
+              {t('partner.whoLookingForDesc')}
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              { title: 'Distributors', desc: 'Expand our reach to new regions and markets' },
-              { title: 'Retailers', desc: 'Bring innovative food solutions to your customers' },
-              { title: 'Research Institutions', desc: 'Collaborate on food science and nutrition research' },
-              { title: 'NGOs & Humanitarian Orgs', desc: 'Partner for emergency relief and food security initiatives' },
-              { title: 'Government Agencies', desc: 'Work together on public health and nutrition programs' },
-              { title: 'Food Service Providers', desc: 'Integrate our solutions into your offerings' }
-            ].map((item, index) => (
+            {partnerCategories.map((item, index) => (
               <div
                 key={index}
-                className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300"
+                className={`bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 ${isRTL ? 'text-right' : ''}`}
               >
                 <h3 className="font-playfair text-xl font-semibold text-heading mb-2">
                   {item.title}
@@ -144,35 +146,35 @@ export default function Partner() {
       {/* Contact Form Section */}
       <section className="py-20 lg:py-28 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+          <div className={`text-center mb-12 ${isRTL ? 'text-right' : ''}`}>
             <h2 className="font-playfair text-4xl lg:text-5xl font-bold text-heading mb-4">
-              Join as a Partner
+              {t('partner.joinAsPartner')}
             </h2>
             <p className="text-heading-light text-lg max-w-2xl mx-auto">
-              Ready to explore partnership opportunities? Fill out the form below and our team will get back to you.
+              {t('partner.joinAsPartnerDesc')}
             </p>
           </div>
 
           {isSubmitted ? (
-            <div className="bg-cream rounded-3xl p-12 text-center">
-              <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className={`bg-cream rounded-3xl p-12 text-center ${isRTL ? 'text-right' : ''}`}>
+              <div className={`w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 ${isRTL ? 'mr-auto ml-auto' : ''}`}>
                 <svg className="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
               <h3 className="font-playfair text-2xl font-semibold text-heading mb-4">
-                Thank You for Your Interest!
+                {t('partner.thankYouTitle')}
               </h3>
               <p className="text-heading-light text-lg">
-                We've received your partnership inquiry and will be in touch within 2-5 business days.
+                {t('partner.thankYouDesc')}
               </p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="bg-cream rounded-3xl p-8 lg:p-12">
               <div className="grid md:grid-cols-2 gap-6 mb-6">
                 <div>
-                  <label className="block text-sm font-medium text-heading mb-2">
-                    Your Name *
+                  <label className={`block text-sm font-medium text-heading mb-2 ${isRTL ? 'text-right' : ''}`}>
+                    {t('partner.yourName')} *
                   </label>
                   <input
                     type="text"
@@ -180,13 +182,13 @@ export default function Partner() {
                     required
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-white rounded-xl border border-heading/10 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
-                    placeholder="Full name"
+                    className={`w-full px-4 py-3 bg-white rounded-xl border border-heading/10 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all ${isRTL ? 'text-right' : ''}`}
+                    placeholder={t('partner.namePlaceholder')}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-heading mb-2">
-                    Email Address *
+                  <label className={`block text-sm font-medium text-heading mb-2 ${isRTL ? 'text-right' : ''}`}>
+                    {t('partner.emailAddress')} *
                   </label>
                   <input
                     type="email"
@@ -194,38 +196,38 @@ export default function Partner() {
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-white rounded-xl border border-heading/10 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
-                    placeholder="your.email@company.com"
+                    className={`w-full px-4 py-3 bg-white rounded-xl border border-heading/10 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all ${isRTL ? 'text-right' : ''}`}
+                    placeholder={t('partner.emailPlaceholder')}
                   />
                 </div>
               </div>
 
               <div className="grid md:grid-cols-2 gap-6 mb-6">
                 <div>
-                  <label className="block text-sm font-medium text-heading mb-2">
-                    Organization
+                  <label className={`block text-sm font-medium text-heading mb-2 ${isRTL ? 'text-right' : ''}`}>
+                    {t('partner.organization')}
                   </label>
                   <input
                     type="text"
                     name="organization"
                     value={formData.organization}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-white rounded-xl border border-heading/10 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
-                    placeholder="Company or organization name"
+                    className={`w-full px-4 py-3 bg-white rounded-xl border border-heading/10 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all ${isRTL ? 'text-right' : ''}`}
+                    placeholder={t('partner.organizationPlaceholder')}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-heading mb-2">
-                    Partner Type *
+                  <label className={`block text-sm font-medium text-heading mb-2 ${isRTL ? 'text-right' : ''}`}>
+                    {t('partner.partnerType')} *
                   </label>
                   <select
                     name="partnerType"
                     required
                     value={formData.partnerType}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-white rounded-xl border border-heading/10 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
+                    className={`w-full px-4 py-3 bg-white rounded-xl border border-heading/10 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all ${isRTL ? 'text-right' : ''}`}
                   >
-                    <option value="">Select partner type</option>
+                    <option value="">{t('partner.selectPartnerType')}</option>
                     {partnerTypes.map((type) => (
                       <option key={type.value} value={type.value}>
                         {type.label}
@@ -236,8 +238,8 @@ export default function Partner() {
               </div>
 
               <div className="mb-8">
-                <label className="block text-sm font-medium text-heading mb-2">
-                  Tell Us About Your Interest *
+                <label className={`block text-sm font-medium text-heading mb-2 ${isRTL ? 'text-right' : ''}`}>
+                  {t('partner.tellUsInterest')} *
                 </label>
                 <textarea
                   name="message"
@@ -245,8 +247,8 @@ export default function Partner() {
                   rows="5"
                   value={formData.message}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-white rounded-xl border border-heading/10 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all resize-none"
-                  placeholder="Describe your organization and how you'd like to partner with ReachFood..."
+                  className={`w-full px-4 py-3 bg-white rounded-xl border border-heading/10 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all resize-none ${isRTL ? 'text-right' : ''}`}
+                  placeholder={t('partner.interestPlaceholder')}
                 />
               </div>
 
@@ -254,7 +256,7 @@ export default function Partner() {
                 type="submit"
                 className="w-full py-4 bg-primary text-white font-semibold rounded-full hover:bg-primary-hover transition-all duration-300 shadow-lg shadow-primary/30"
               >
-                Submit Partnership Inquiry
+                {t('partner.submitInquiry')}
               </button>
             </form>
           )}
@@ -263,25 +265,25 @@ export default function Partner() {
 
       {/* CTA Section */}
       <section className="py-20 lg:py-28 bg-heading text-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className={`max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center ${isRTL ? 'text-right' : ''}`}>
           <h2 className="font-playfair text-3xl lg:text-4xl font-bold mb-6">
-            Let's Build the Future of Food Together
+            {t('partner.ctaTitle')}
           </h2>
           <p className="text-white/70 text-lg mb-8 max-w-2xl mx-auto">
-            Join us in our mission to make nutritious, sustainable meals accessible to everyone, everywhere.
+            {t('partner.ctaDesc')}
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className={`flex flex-col sm:flex-row gap-4 justify-center ${isRTL ? 'sm:flex-row-reverse' : ''}`}>
             <a
               href="/about"
               className="inline-flex items-center justify-center px-8 py-4 bg-white text-heading font-semibold rounded-full hover:bg-cream transition-all duration-300"
             >
-              Learn About Our Mission
+              {t('partner.learnMission')}
             </a>
             <a
               href="/contact"
               className="inline-flex items-center justify-center px-8 py-4 bg-transparent text-white font-semibold rounded-full border-2 border-white hover:bg-white hover:text-heading transition-all duration-300"
             >
-              Contact Us
+              {t('partner.contactUs')}
             </a>
           </div>
         </div>

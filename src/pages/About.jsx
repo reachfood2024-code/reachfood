@@ -3,55 +3,80 @@ import { useLanguage } from '../context/LanguageContext';
 
 export default function About() {
   const [activeTeamMember, setActiveTeamMember] = useState(null);
-  const { t, isRTL } = useLanguage();
+  const { t, language, isRTL } = useLanguage();
 
   const teamMembers = [
     {
       name: 'Amera Otoum',
-      role: 'CEO & Packaging CPO',
-      description: 'Researcher in Economics and Environmental Psychology. Expert working in emergencies and empowering vulnerable communities.',
-      education: 'MSc: Economic and Environmental Resources, BS: Agricultural Engineering',
+      nameAr: 'أميرة عتوم',
+      role: t('team.ceoRole'),
+      description: language === 'ar'
+        ? 'باحثة في الاقتصاد وعلم النفس البيئي. خبيرة في العمل في حالات الطوارئ وتمكين المجتمعات الضعيفة.'
+        : 'Researcher in Economics and Environmental Psychology. Expert working in emergencies and empowering vulnerable communities.',
+      education: language === 'ar'
+        ? 'ماجستير: الموارد الاقتصادية والبيئية، بكالوريوس: الهندسة الزراعية'
+        : 'MSc: Economic and Environmental Resources, BS: Agricultural Engineering',
       email: 'Ameraaloto@gmail.com',
       tel: '+962 792977610',
       image: '/aboutus/amera.jpg'
     },
     {
-      name: 'Dr. Aljawharah Alsubaie',
-      role: 'Food Advisor',
-      description: 'Researcher in Therapeutic Effectiveness. Filed Patent in 2014, Patent in innovative candy for dental care. Hospital training in NHS hospitals.',
-      education: 'Doctor of Pharmacy (professional doctorate)',
+      name: language === 'ar' ? 'د. الجوهرة السبيعي' : 'Dr. Aljawharah Alsubaie',
+      role: t('team.foodAdvisor'),
+      description: language === 'ar'
+        ? 'باحثة في الفعالية العلاجية. قدمت براءة اختراع عام 2014 لحلوى مبتكرة للعناية بالأسنان. تدريب في مستشفيات NHS.'
+        : 'Researcher in Therapeutic Effectiveness. Filed Patent in 2014, Patent in innovative candy for dental care. Hospital training in NHS hospitals.',
+      education: language === 'ar'
+        ? 'دكتوراه في الصيدلة (دكتوراه مهنية)'
+        : 'Doctor of Pharmacy (professional doctorate)',
       email: 'jalkhuzem@gmail.com',
       image: '/aboutus/Aljawharah Alsubaie.jpg'
     },
     {
-      name: 'Dr. Ali Ali Redha',
-      role: 'Food R&D Advisor',
-      description: 'Researcher in Food Bioactives',
-      education: 'PhD: Food, Nutrition & Health, MSc: Analytical Chemistry, BSc: Chemistry',
+      name: language === 'ar' ? 'د. علي علي رضا' : 'Dr. Ali Ali Redha',
+      role: t('team.foodRDAdvisor'),
+      description: language === 'ar'
+        ? 'باحث في المركبات الغذائية النشطة بيولوجياً'
+        : 'Researcher in Food Bioactives',
+      education: language === 'ar'
+        ? 'دكتوراه: الغذاء والتغذية والصحة، ماجستير: الكيمياء التحليلية، بكالوريوس: الكيمياء'
+        : 'PhD: Food, Nutrition & Health, MSc: Analytical Chemistry, BSc: Chemistry',
       email: 'ali96chemx@gmail.com',
       image: '/aboutus/Ali Ali Redha.jpg'
     },
     {
-      name: 'Dr. Mahmoud Alkhateib',
-      role: 'Food For Emergency Advisor',
-      description: 'Served as QRC Consultant Dietitian in Somalia (2011) and led nutrition efforts in multiple disaster management camps (2012–2018). Participated in key regional meetings and courses in Amman and Doha, including leading the Yemen malnutrition assessment mission (2012) and delivering expert presentations (2016–2018).',
-      education: 'Emergency Nutrition, Disaster Management, Malnutrition Assessment',
+      name: language === 'ar' ? 'د. محمود الخطيب' : 'Dr. Mahmoud Alkhateib',
+      role: t('team.emergencyAdvisor'),
+      description: language === 'ar'
+        ? 'عمل كمستشار تغذية في الهلال الأحمر القطري في الصومال (2011) وقاد جهود التغذية في مخيمات إدارة الكوارث (2012-2018). شارك في اجتماعات ودورات إقليمية في عمان والدوحة، بما في ذلك قيادة مهمة تقييم سوء التغذية في اليمن (2012).'
+        : 'Served as QRC Consultant Dietitian in Somalia (2011) and led nutrition efforts in multiple disaster management camps (2012–2018). Participated in key regional meetings and courses in Amman and Doha, including leading the Yemen malnutrition assessment mission (2012) and delivering expert presentations (2016–2018).',
+      education: language === 'ar'
+        ? 'التغذية الطارئة، إدارة الكوارث، تقييم سوء التغذية'
+        : 'Emergency Nutrition, Disaster Management, Malnutrition Assessment',
       email: 'mahmoudalkhateib@hotmail.com',
       image: '/aboutus/Mahmoud Alkhatib.jpg'
     },
     {
       name: 'Enes Hurmuzlu',
-      role: 'Developer & Tech Advisor',
-      description: 'Mathematician and programmer from Iraq/Türkiye with experience in full-stack mobile development, AI advising, and mathematics education. Worked with startups in the US, Finland, and Jordan, developed iOS and Android applications, and published 60+ online math lectures. IMO 2025 Iraq Team Representative and Yale Young Global Scholars alumnus.',
-      education: 'Full-Stack Mobile Development, AI Advising, Mathematics Education',
+      role: t('team.techAdvisor'),
+      description: language === 'ar'
+        ? 'عالم رياضيات ومبرمج من العراق/تركيا. لديه خبرة في تطوير تطبيقات الموبايل، استشارات الذكاء الاصطناعي، وتعليم الرياضيات. عمل مع شركات ناشئة في أمريكا وفنلندا والأردن، وطور تطبيقات iOS وAndroid، ونشر أكثر من 60 محاضرة رياضيات عبر الإنترنت. ممثل فريق العراق في الأولمبياد الدولي للرياضيات 2025 وخريج برنامج Yale Young Global Scholars.'
+        : 'Mathematician and programmer from Iraq/Türkiye with experience in full-stack mobile development, AI advising, and mathematics education. Worked with startups in the US, Finland, and Jordan, developed iOS and Android applications, and published 60+ online math lectures. IMO 2025 Iraq Team Representative and Yale Young Global Scholars alumnus.',
+      education: language === 'ar'
+        ? 'تطوير تطبيقات الموبايل، الذكاء الاصطناعي، تعليم الرياضيات'
+        : 'Full-Stack Mobile Development, AI Advising, Mathematics Education',
       email: 'enesalhurmuzi@gmail.com',
       image: '/aboutus/anes.jpg'
     },
     {
-      name: 'Azeddine Zellag',
-      role: 'Full Stack Developer',
-      description: "Full Stack Developer holding a Master's degree in Psychology. Specializes in building high-revenue SaaS platforms and AI-driven applications that prioritize human behavior and user experience. Expert in Next.js and mobile architecture, with a focus on voice translation and cognitive AI agents.",
-      education: 'Full-Stack Architecture, AI & Voice Integration, Psychology-Driven UX',
+      name: language === 'ar' ? 'عزالدين زلاق' : 'Azeddine Zellag',
+      role: t('team.fullStackDev'),
+      description: language === 'ar'
+        ? 'مطور Full Stack يحمل ماجستير في علم النفس. متخصص في بناء منصات SaaS عالية الإيرادات وتطبيقات الذكاء الاصطناعي التي تعطي الأولوية للسلوك البشري وتجربة المستخدم. خبير في Next.js وهندسة تطبيقات الموبايل، مع التركيز على الترجمة الصوتية ووكلاء الذكاء الاصطناعي المعرفي.'
+        : "Full Stack Developer holding a Master's degree in Psychology. Specializes in building high-revenue SaaS platforms and AI-driven applications that prioritize human behavior and user experience. Expert in Next.js and mobile architecture, with a focus on voice translation and cognitive AI agents.",
+      education: language === 'ar'
+        ? 'هندسة Full-Stack، تكامل الذكاء الاصطناعي والصوت، تجربة المستخدم القائمة على علم النفس'
+        : 'Full-Stack Architecture, AI & Voice Integration, Psychology-Driven UX',
       email: 'autonomy.owner@gmail.com',
       image: '/aboutus/azeddinezellag.jpg'
     }
@@ -60,67 +85,83 @@ export default function About() {
   const timeline = [
     {
       year: '2023',
-      title: 'Research Collaboration',
-      description: "Launched collaboration with Women's Research Group and ReachSci"
+      title: t('timeline.researchCollab'),
+      description: t('timeline.researchCollabDesc')
     },
     {
       year: '2024',
-      title: 'Award Recognition',
-      description: 'Won Best Research Poster Award (Food Security & Health Recovery) with ReachSci'
+      title: t('timeline.awardRecognition'),
+      description: t('timeline.awardRecognitionDesc')
     },
     {
       year: '2025',
-      title: 'Innovation Development',
-      description: 'Developed eco-friendly packaging and 12+ health recovery food recipes'
+      title: t('timeline.innovationDev'),
+      description: t('timeline.innovationDevDesc')
     },
     {
       year: '2025',
-      title: 'Research Publication',
-      description: 'Published research on unique recipes & sustainable agriculture for harsh environments'
+      title: t('timeline.researchPub'),
+      description: t('timeline.researchPubDesc')
     },
     {
       year: '2026–2027',
-      title: 'Global Events',
-      description: 'Served at major global events including Hajj, Umrah, and the World Cup, providing sustainable and culturally authentic meals'
+      title: t('timeline.globalEvents'),
+      description: t('timeline.globalEventsDesc')
     }
   ];
 
   const values = [
     {
-      title: 'Innovation Based Research',
-      description: 'Pioneering breakthrough food technology that transforms how nutrition is accessed worldwide'
+      title: t('about.innovationResearch'),
+      description: t('about.innovationResearchDesc')
     },
     {
-      title: 'Our Future Goals',
-      description: 'Creating solutions for emergency relief, adventure, professional life, and family wellness'
+      title: t('about.futureGoals'),
+      description: t('about.futureGoalsDesc')
     },
     {
-      title: 'Sustainability',
-      description: 'Building a circular economy where packaging becomes part of the natural ecosystem'
+      title: t('about.sustainability'),
+      description: t('about.sustainabilityDesc')
     },
     {
-      title: 'Accessibility',
-      description: 'Ensuring nutrition is accessible to all communities regardless of circumstances or abilities'
+      title: t('about.accessibility'),
+      description: t('about.accessibilityDesc')
     }
   ];
 
   const stats = [
-    { value: '5', label: 'Minutes', description: 'Heating time from ambient to 65°C' },
-    { value: '100%', label: 'Plantable and Biodegradable', description: 'Packaging transforms into wildflowers and using as hypotonic Agriculture system' },
-    { value: '15+', label: 'Countries', description: 'Emergency relief deployments' },
-    { value: '+1M', label: 'Meals', description: 'Serving professionals and families with busy lifestyles' }
+    {
+      value: '5',
+      label: t('about.minutes'),
+      description: t('about.heatingTime')
+    },
+    {
+      value: '100%',
+      label: t('about.plantable'),
+      description: t('about.plantableDesc')
+    },
+    {
+      value: '15+',
+      label: t('about.countries'),
+      description: t('about.countriesDesc')
+    },
+    {
+      value: '+1M',
+      label: t('about.meals'),
+      description: t('about.mealsDesc')
+    }
   ];
 
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <section className="relative py-24 lg:py-32 bg-gradient-to-br from-cream via-white to-primary/5 overflow-hidden">
-        <div className="absolute top-20 right-20 w-64 h-64 border-4 border-primary/10 rounded-full" />
-        <div className="absolute bottom-20 left-10 w-40 h-40 bg-teal/5 rotate-45" />
+        <div className={`absolute top-20 ${isRTL ? 'left-20' : 'right-20'} w-64 h-64 border-4 border-primary/10 rounded-full`} />
+        <div className={`absolute bottom-20 ${isRTL ? 'right-10' : 'left-10'} w-40 h-40 bg-teal/5 rotate-45`} />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/3 rounded-full blur-3xl" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="text-center max-w-4xl mx-auto">
+          <div className={`text-center max-w-4xl mx-auto ${isRTL ? 'text-right' : ''}`}>
             <h1 className="font-playfair text-5xl lg:text-7xl font-bold text-heading mb-6">
               {t('about.title')}
             </h1>
@@ -175,8 +216,8 @@ export default function About() {
                   <span className="text-lg">Founders Image</span>
                 </div>
               </div>
-              <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-primary/10 rounded-full -z-10" />
-              <div className="absolute -top-6 -right-6 w-24 h-24 bg-teal/10 rounded-full -z-10" />
+              <div className={`absolute -bottom-6 ${isRTL ? '-right-6' : '-left-6'} w-32 h-32 bg-primary/10 rounded-full -z-10`} />
+              <div className={`absolute -top-6 ${isRTL ? '-left-6' : '-right-6'} w-24 h-24 bg-teal/10 rounded-full -z-10`} />
             </div>
           </div>
         </div>
@@ -185,7 +226,7 @@ export default function About() {
       {/* Our Founding Values */}
       <section className="py-20 lg:py-28 bg-cream">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className={`text-center mb-16 ${isRTL ? 'text-right' : ''}`}>
             <h2 className="font-playfair text-4xl lg:text-5xl font-bold text-heading mb-4">
               {t('about.foundingValues')}
             </h2>
@@ -198,9 +239,9 @@ export default function About() {
             {values.map((value, index) => (
               <div
                 key={index}
-                className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                className={`bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 ${isRTL ? 'text-right' : ''}`}
               >
-                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6">
+                <div className={`w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 ${isRTL ? 'mr-0 ml-auto' : ''}`}>
                   <span className="text-primary text-2xl font-bold">{index + 1}</span>
                 </div>
                 <h3 className="font-playfair text-xl font-semibold text-heading mb-3">
@@ -218,7 +259,7 @@ export default function About() {
       {/* Meet Our Team */}
       <section className="py-20 lg:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className={`text-center mb-16 ${isRTL ? 'text-right' : ''}`}>
             <h2 className="font-playfair text-4xl lg:text-5xl font-bold text-heading mb-4">
               {t('about.meetOurTeam')}
             </h2>
@@ -231,7 +272,7 @@ export default function About() {
             {teamMembers.map((member, index) => (
               <div
                 key={index}
-                className="group bg-cream rounded-3xl overflow-hidden hover:shadow-xl transition-all duration-500"
+                className={`group bg-cream rounded-3xl overflow-hidden hover:shadow-xl transition-all duration-500 ${isRTL ? 'text-right' : ''}`}
               >
                 {/* Image */}
                 <div className="aspect-square bg-gradient-to-br from-primary/10 to-teal/10 relative overflow-hidden">
@@ -270,19 +311,13 @@ export default function About() {
 
                   {/* Contact */}
                   <div className="pt-4 border-t border-heading/10 space-y-2">
-                    <a
-                      href={`mailto:${member.email}`}
-                      className="block text-sm text-heading-light hover:text-primary transition-colors truncate"
-                    >
-                      {member.email}
-                    </a>
+                    <p className="text-sm text-heading-light">
+                      {language === 'ar' ? 'البريد:' : 'Email:'} <a href={`mailto:${member.email}`} className="hover:text-primary transition-colors">{member.email}</a>
+                    </p>
                     {member.tel && (
-                      <a
-                        href={`tel:${member.tel}`}
-                        className="block text-sm text-heading-light hover:text-primary transition-colors"
-                      >
-                        {member.tel}
-                      </a>
+                      <p className="text-sm text-heading-light">
+                        {language === 'ar' ? 'هاتف:' : 'Phone:'} <a href={`tel:${member.tel}`} className="hover:text-primary transition-colors">{member.tel}</a>
+                      </p>
                     )}
                   </div>
                 </div>
@@ -295,7 +330,7 @@ export default function About() {
       {/* Our Journey Timeline */}
       <section className="py-20 lg:py-28 bg-gradient-to-br from-primary/5 to-teal/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className={`text-center mb-16 ${isRTL ? 'text-right' : ''}`}>
             <h2 className="font-playfair text-4xl lg:text-5xl font-bold text-heading mb-4">
               {t('about.ourJourney')}
             </h2>
@@ -313,12 +348,18 @@ export default function About() {
                 <div
                   key={index}
                   className={`relative lg:flex lg:items-center ${
-                    index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'
+                    isRTL
+                      ? (index % 2 === 0 ? 'lg:flex-row-reverse' : 'lg:flex-row')
+                      : (index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse')
                   }`}
                 >
                   {/* Content */}
-                  <div className={`lg:w-1/2 ${index % 2 === 0 ? 'lg:pr-16 lg:text-right' : 'lg:pl-16'}`}>
-                    <div className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all duration-300">
+                  <div className={`lg:w-1/2 ${
+                    isRTL
+                      ? (index % 2 === 0 ? 'lg:pl-16 lg:text-right' : 'lg:pr-16 lg:text-right')
+                      : (index % 2 === 0 ? 'lg:pr-16 lg:text-right' : 'lg:pl-16')
+                  }`}>
+                    <div className={`bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all duration-300 ${isRTL ? 'text-right' : ''}`}>
                       <span className="inline-block px-4 py-1 bg-primary text-white text-sm font-semibold rounded-full mb-4">
                         {item.year}
                       </span>
@@ -348,7 +389,7 @@ export default function About() {
       {/* Future Goals Stats */}
       <section className="py-20 lg:py-28 bg-heading text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className={`text-center mb-16 ${isRTL ? 'text-right' : ''}`}>
             <h2 className="font-playfair text-4xl lg:text-5xl font-bold mb-4">
               {t('about.ourFutureGoals')}
             </h2>
@@ -361,7 +402,7 @@ export default function About() {
             {stats.map((stat, index) => (
               <div
                 key={index}
-                className="text-center p-8 rounded-2xl bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300"
+                className={`text-center p-8 rounded-2xl bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 ${isRTL ? 'text-right' : ''}`}
               >
                 <p className="font-playfair text-5xl lg:text-6xl font-bold text-primary mb-2">
                   {stat.value}
@@ -380,14 +421,14 @@ export default function About() {
 
       {/* CTA Section */}
       <section className="py-20 lg:py-28 bg-cream">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className={`max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center ${isRTL ? 'text-right' : ''}`}>
           <h2 className="font-playfair text-3xl lg:text-4xl font-bold text-heading mb-6">
             {t('about.joinMission')}
           </h2>
           <p className="text-heading-light text-lg mb-8 max-w-2xl mx-auto">
             {t('about.joinMissionDesc')}
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className={`flex flex-col sm:flex-row gap-4 justify-center ${isRTL ? 'sm:flex-row-reverse' : ''}`}>
             <a
               href="/shop"
               className="inline-flex items-center justify-center px-8 py-4 bg-primary text-white font-semibold rounded-full hover:bg-primary-hover transition-all duration-300 shadow-lg shadow-primary/30"
