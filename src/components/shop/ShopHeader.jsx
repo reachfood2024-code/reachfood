@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function ShopHeader() {
+  const { t } = useLanguage();
+
   return (
     <div className="relative h-64 lg:h-80 overflow-hidden">
       {/* Background Image Collage */}
@@ -42,7 +45,7 @@ export default function ShopHeader() {
       {/* Content */}
       <div className="relative h-full flex flex-col items-center justify-center text-center px-4">
         <h1 className="font-playfair text-4xl lg:text-6xl font-bold text-white mb-4 tracking-wide">
-          COLLECTION
+          {t('shop.collection')}
         </h1>
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm">
@@ -50,10 +53,10 @@ export default function ShopHeader() {
             to="/"
             className="text-white/70 hover:text-white transition-colors"
           >
-            Home
+            {t('shop.home')}
           </Link>
           <span className="text-white/50">/</span>
-          <span className="text-primary font-medium">All Products</span>
+          <span className="text-primary font-medium">{t('shop.allProducts')}</span>
         </nav>
       </div>
     </div>

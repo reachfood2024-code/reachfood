@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function About() {
   const [activeTeamMember, setActiveTeamMember] = useState(null);
+  const { t, isRTL } = useLanguage();
 
   const teamMembers = [
     {
@@ -120,18 +122,16 @@ export default function About() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="font-playfair text-5xl lg:text-7xl font-bold text-heading mb-6">
-              REACHFOOD
+              {t('about.title')}
             </h1>
             <p className="text-2xl lg:text-3xl text-primary font-medium mb-4">
-              Flavors of Innovation
+              {t('about.tagline')}
             </p>
             <p className="text-xl text-teal font-medium mb-8">
-              Team Work
+              {t('about.teamWork')}
             </p>
             <p className="text-lg lg:text-xl text-heading-light max-w-3xl mx-auto leading-relaxed">
-              Founded on the belief that nutrition should never be limited by circumstance,
-              ReachFood combines cutting-edge food science with sustainable innovation to
-              deliver hot, nutritious meals anywhere in the world.
+              {t('about.heroDescription')}
             </p>
           </div>
         </div>
@@ -140,29 +140,23 @@ export default function About() {
       {/* Our Story Section */}
       <section className="py-20 lg:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
+          <div className={`grid lg:grid-cols-2 gap-16 items-center ${isRTL ? 'direction-rtl' : ''}`}>
+            <div className={isRTL ? 'text-right' : ''}>
               <h2 className="font-playfair text-4xl lg:text-5xl font-bold text-heading mb-8">
-                Our Story
+                {t('about.ourStory')}
               </h2>
               <div className="space-y-6 text-heading-light text-lg leading-relaxed">
                 <p>
-                  Our journey began at ReachSci — the place where it all started. There, we launched
-                  an intervention in Madagascar, a country struggling with famine, food insecurity,
-                  and widespread vitamin A deficiency. ReachSci brought our team together to take on
-                  this urgent challenge.
+                  {t('about.storyP1')}
                 </p>
                 <p>
-                  It was there we learned how to transform research into real innovation and that
-                  experience inspired us to go even further. We developed complete, nutritious meals
-                  using local crops, designed to nourish communities while supporting local agriculture.
+                  {t('about.storyP2')}
                 </p>
                 <p className="text-heading font-medium">
-                  That's how ReachFood was born: food that not only feeds, but heals, sustains, and grows again.
+                  {t('about.storyP3')}
                 </p>
                 <p className="text-primary italic">
-                  A heartfelt thanks to ReachSci, and special credit to Dr. Mohammed alawami, the
-                  President of ReachSci and our supervisor, for his guidance and support on this journey.
+                  {t('about.storyCredit')}
                 </p>
               </div>
             </div>
@@ -193,10 +187,10 @@ export default function About() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="font-playfair text-4xl lg:text-5xl font-bold text-heading mb-4">
-              Our Founding Values
+              {t('about.foundingValues')}
             </h2>
             <p className="text-heading-light text-lg max-w-2xl mx-auto">
-              These core principles guide every decision we make and every innovation we pursue
+              {t('about.foundingValuesDesc')}
             </p>
           </div>
 
@@ -226,10 +220,10 @@ export default function About() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="font-playfair text-4xl lg:text-5xl font-bold text-heading mb-4">
-              Meet Our Team
+              {t('about.meetOurTeam')}
             </h2>
             <p className="text-heading-light text-lg max-w-2xl mx-auto">
-              Experts united by a shared vision of making nutrition accessible to everyone, everywhere
+              {t('about.meetOurTeamDesc')}
             </p>
           </div>
 
@@ -303,10 +297,10 @@ export default function About() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="font-playfair text-4xl lg:text-5xl font-bold text-heading mb-4">
-              Our Journey
+              {t('about.ourJourney')}
             </h2>
             <p className="text-heading-light text-lg max-w-2xl mx-auto">
-              From concept to global impact - the milestones that shaped ReachFood
+              {t('about.ourJourneyDesc')}
             </p>
           </div>
 
@@ -356,10 +350,10 @@ export default function About() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="font-playfair text-4xl lg:text-5xl font-bold mb-4">
-              Our Future Goals
+              {t('about.ourFutureGoals')}
             </h2>
             <p className="text-white/70 text-lg max-w-2xl mx-auto">
-              Our vision and ambitions for transforming the future of nutrition globally
+              {t('about.ourFutureGoalsDesc')}
             </p>
           </div>
 
@@ -388,24 +382,23 @@ export default function About() {
       <section className="py-20 lg:py-28 bg-cream">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="font-playfair text-3xl lg:text-4xl font-bold text-heading mb-6">
-            Join Our Mission
+            {t('about.joinMission')}
           </h2>
           <p className="text-heading-light text-lg mb-8 max-w-2xl mx-auto">
-            Be part of the food revolution. Together, we can ensure nutritious meals
-            reach every corner of the world.
+            {t('about.joinMissionDesc')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="/shop"
               className="inline-flex items-center justify-center px-8 py-4 bg-primary text-white font-semibold rounded-full hover:bg-primary-hover transition-all duration-300 shadow-lg shadow-primary/30"
             >
-              Explore Our Products
+              {t('about.exploreProducts')}
             </a>
             <a
               href="/contact"
               className="inline-flex items-center justify-center px-8 py-4 bg-white text-heading font-semibold rounded-full hover:bg-heading hover:text-white transition-all duration-300 border-2 border-heading"
             >
-              Get In Touch
+              {t('about.getInTouch')}
             </a>
           </div>
         </div>

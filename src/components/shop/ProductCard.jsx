@@ -1,42 +1,48 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
+import { useLanguage } from '../../context/LanguageContext';
+import { productTranslations } from '../../data/translations';
 
 export default function ProductCard({ product, viewMode = 'grid' }) {
   const { addToCart, formatPrice } = useCart();
+  const { t, language, isRTL } = useLanguage();
 
   const handleAddToCart = (e) => {
     e.preventDefault();
     addToCart(product);
   };
 
+  const productName = productTranslations[language]?.[product.id]?.name || product.name;
+  const productDescription = productTranslations[language]?.[product.id]?.description || product.description;
+
   if (viewMode === 'list') {
     return (
-      <div className="product-card group bg-white rounded-2xl p-4 flex gap-6">
+      <div className={`product-card group bg-white rounded-2xl p-4 flex gap-6 ${isRTL ? 'flex-row-reverse' : ''}`}>
         {/* Image */}
         <Link to={`/product/${product.id}`} className="relative flex-shrink-0">
           <div className="w-32 h-32 rounded-xl overflow-hidden bg-gray-900">
             <img
               src={product.image}
-              alt={product.name}
+              alt={productName}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             />
           </div>
 
           {/* Sale Badge */}
           {product.originalPrice && (
-            <span className="absolute top-2 right-2 bg-teal text-white text-xs font-bold px-2 py-0.5 rounded-full">
-              Save {Math.round((1 - product.price / product.originalPrice) * 100)}%
+            <span className={`absolute top-2 ${isRTL ? 'left-2' : 'right-2'} bg-teal text-white text-xs font-bold px-2 py-0.5 rounded-full`}>
+              {t('products.save')} {Math.round((1 - product.price / product.originalPrice) * 100)}%
             </span>
           )}
         </Link>
 
         {/* Content */}
-        <div className="flex-1 flex flex-col justify-between">
+        <div className={`flex-1 flex flex-col justify-between ${isRTL ? 'text-right' : ''}`}>
           <div>
-            <div className="flex items-start justify-between mb-2">
+            <div className={`flex items-start justify-between mb-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
               <Link to={`/product/${product.id}`}>
                 <h3 className="font-playfair text-lg font-semibold text-heading hover:text-primary transition-colors">
-                  {product.name}
+                  {productName}
                 </h3>
               </Link>
               <span
@@ -46,11 +52,11 @@ export default function ProductCard({ product, viewMode = 'grid' }) {
               />
             </div>
             <p className="text-heading-light text-sm line-clamp-2">
-              {product.description}
+              {productDescription}
             </p>
           </div>
 
-          <div className="flex items-center justify-between mt-4">
+          <div className={`flex items-center justify-between mt-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <div className="flex items-center gap-2">
               <span className="text-primary font-bold text-lg">
                 {formatPrice(product.price)}
@@ -70,7 +76,7 @@ export default function ProductCard({ product, viewMode = 'grid' }) {
                   : 'bg-gray-200 text-gray-400 cursor-not-allowed'
               }`}
             >
-              {product.inStock ? 'Add to Cart' : 'Out of Stock'}
+              {product.inStock ? t('products.addToCart') : t('products.outOfStock')}
             </button>
           </div>
         </div>
@@ -82,15 +88,15 @@ export default function ProductCard({ product, viewMode = 'grid' }) {
     <div className="product-card group bg-white rounded-3xl p-4 relative">
       {/* Sale Badge */}
       {product.originalPrice && (
-        <div className="absolute top-6 right-6 z-10">
+        <div className={`absolute top-6 ${isRTL ? 'left-6' : 'right-6'} z-10`}>
           <span className="bg-teal text-white text-xs font-bold px-3 py-1 rounded-full">
-            Save {Math.round((1 - product.price / product.originalPrice) * 100)}%
+            {t('products.save')} {Math.round((1 - product.price / product.originalPrice) * 100)}%
           </span>
         </div>
       )}
 
       {/* Stock Indicator */}
-      <div className="absolute top-6 left-6 z-10">
+      <div className={`absolute top-6 ${isRTL ? 'right-6' : 'left-6'} z-10`}>
         <span
           className={`w-3 h-3 rounded-full inline-block ${
             product.inStock ? 'bg-green-500' : 'bg-red-500'
@@ -103,7 +109,7 @@ export default function ProductCard({ product, viewMode = 'grid' }) {
         <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-900">
           <img
             src={product.image}
-            alt={product.name}
+            alt={productName}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
 
@@ -118,7 +124,7 @@ export default function ProductCard({ product, viewMode = 'grid' }) {
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}
             >
-              {product.inStock ? 'Add to Cart' : 'Out of Stock'}
+              {product.inStock ? t('products.addToCart') : t('products.outOfStock')}
             </button>
           </div>
         </div>
@@ -128,7 +134,7 @@ export default function ProductCard({ product, viewMode = 'grid' }) {
       <div className="text-center">
         <Link to={`/product/${product.id}`}>
           <h3 className="font-playfair text-lg font-semibold text-heading hover:text-primary transition-colors mb-2">
-            {product.name}
+            {productName}
           </h3>
         </Link>
         <div className="flex items-center justify-center gap-2">

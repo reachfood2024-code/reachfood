@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Contact() {
+  const { t, isRTL } = useLanguage();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -13,40 +15,40 @@ export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
 
   const inquiryTypes = [
-    'General Inquiry',
-    'Partnership Opportunity',
-    'Emergency Relief',
-    'Product Information',
-    'Press & Media',
-    'Investment',
-    'Other'
+    { key: 'generalInquiry', label: t('contact.generalInquiry') },
+    { key: 'partnershipOpportunity', label: t('contact.partnershipOpportunity') },
+    { key: 'emergencyRelief', label: t('contact.emergencyRelief') },
+    { key: 'productInformation', label: t('contact.productInformation') },
+    { key: 'pressMedia', label: t('contact.pressMedia') },
+    { key: 'investment', label: t('contact.investment') },
+    { key: 'other', label: t('contact.other') }
   ];
 
   const offices = [
     {
-      name: 'MENA Operations Center',
-      location: 'Dubai Technology Park, UAE',
-      country: 'United Arab Emirates',
-      focus: 'Cultural Cuisine & Regional Partnerships'
+      name: t('contact.menaOperations'),
+      location: t('contact.dubaiLocation'),
+      country: t('contact.uae'),
+      focus: t('contact.culturalCuisine')
     },
     {
-      name: 'Jordan Office',
-      location: 'Amman, Jordan',
-      country: 'Jordan',
-      focus: 'Research & Development Hub'
+      name: t('contact.jordanOffice'),
+      location: t('contact.ammanLocation'),
+      country: t('contact.jordan'),
+      focus: t('contact.rdHub')
     },
     {
-      name: 'KSA Office',
-      location: 'Riyadh, Saudi Arabia',
-      country: 'Saudi Arabia',
-      focus: 'Regional Distribution & Partnerships'
+      name: t('contact.ksaOffice'),
+      location: t('contact.riyadhLocation'),
+      country: t('contact.saudiArabia'),
+      focus: t('contact.regionalDistribution')
     }
   ];
 
   const responseTimes = [
-    { type: 'General inquiries', time: '24-48 hours' },
-    { type: 'Partnership opportunities', time: '2-5 business days' },
-    { type: 'Emergency relief', time: 'Priority response' }
+    { type: t('contact.generalInquiries'), time: t('contact.hours') },
+    { type: t('contact.partnershipOpportunities'), time: t('contact.businessDays') },
+    { type: t('contact.emergencyReliefResponse'), time: t('contact.priorityResponse') }
   ];
 
   const handleChange = (e) => {
@@ -87,11 +89,10 @@ export default function Contact() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="font-playfair text-5xl lg:text-7xl font-bold text-heading mb-6">
-              Send Us a Message
+              {t('contact.title')}
             </h1>
             <p className="text-lg lg:text-xl text-heading-light max-w-3xl mx-auto leading-relaxed">
-              Have questions about ReachFood? Want to partner with us?
-              We'd love to hear from you. Reach out and let's start a conversation.
+              {t('contact.description')}
             </p>
           </div>
         </div>
@@ -102,8 +103,8 @@ export default function Contact() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           {submitted && (
             <div className="mb-8 p-6 bg-teal/10 border border-teal/20 rounded-2xl text-center">
-              <p className="text-teal font-semibold text-lg">Thank you for your message!</p>
-              <p className="text-heading-light mt-2">We'll get back to you as soon as possible.</p>
+              <p className="text-teal font-semibold text-lg">{t('contact.thankYou')}</p>
+              <p className="text-heading-light mt-2">{t('contact.thankYouDesc')}</p>
             </div>
           )}
 
@@ -111,8 +112,8 @@ export default function Contact() {
             {/* Name Fields */}
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="firstName" className="block text-heading font-medium mb-2">
-                  First Name
+                <label htmlFor="firstName" className={`block text-heading font-medium mb-2 ${isRTL ? 'text-right' : ''}`}>
+                  {t('contact.firstName')}
                 </label>
                 <input
                   type="text"
@@ -120,14 +121,14 @@ export default function Contact() {
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleChange}
-                  placeholder="Your first name"
+                  placeholder={t('contact.firstNamePlaceholder')}
                   required
-                  className="w-full px-5 py-4 bg-cream border-2 border-transparent rounded-xl text-heading placeholder-heading-light/50 focus:outline-none focus:border-primary transition-colors"
+                  className={`w-full px-5 py-4 bg-cream border-2 border-transparent rounded-xl text-heading placeholder-heading-light/50 focus:outline-none focus:border-primary transition-colors ${isRTL ? 'text-right' : ''}`}
                 />
               </div>
               <div>
-                <label htmlFor="lastName" className="block text-heading font-medium mb-2">
-                  Last Name
+                <label htmlFor="lastName" className={`block text-heading font-medium mb-2 ${isRTL ? 'text-right' : ''}`}>
+                  {t('contact.lastName')}
                 </label>
                 <input
                   type="text"
@@ -135,17 +136,17 @@ export default function Contact() {
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleChange}
-                  placeholder="Your last name"
+                  placeholder={t('contact.lastNamePlaceholder')}
                   required
-                  className="w-full px-5 py-4 bg-cream border-2 border-transparent rounded-xl text-heading placeholder-heading-light/50 focus:outline-none focus:border-primary transition-colors"
+                  className={`w-full px-5 py-4 bg-cream border-2 border-transparent rounded-xl text-heading placeholder-heading-light/50 focus:outline-none focus:border-primary transition-colors ${isRTL ? 'text-right' : ''}`}
                 />
               </div>
             </div>
 
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-heading font-medium mb-2">
-                Email
+              <label htmlFor="email" className={`block text-heading font-medium mb-2 ${isRTL ? 'text-right' : ''}`}>
+                {t('contact.email')}
               </label>
               <input
                 type="email"
@@ -153,16 +154,16 @@ export default function Contact() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="your.email@example.com"
+                placeholder={t('contact.emailPlaceholder')}
                 required
-                className="w-full px-5 py-4 bg-cream border-2 border-transparent rounded-xl text-heading placeholder-heading-light/50 focus:outline-none focus:border-primary transition-colors"
+                className={`w-full px-5 py-4 bg-cream border-2 border-transparent rounded-xl text-heading placeholder-heading-light/50 focus:outline-none focus:border-primary transition-colors ${isRTL ? 'text-right' : ''}`}
               />
             </div>
 
             {/* Organization */}
             <div>
-              <label htmlFor="organization" className="block text-heading font-medium mb-2">
-                Organization <span className="text-heading-light font-normal">(Optional)</span>
+              <label htmlFor="organization" className={`block text-heading font-medium mb-2 ${isRTL ? 'text-right' : ''}`}>
+                {t('contact.organization')} <span className="text-heading-light font-normal">{t('contact.organizationOptional')}</span>
               </label>
               <input
                 type="text"
@@ -170,15 +171,15 @@ export default function Contact() {
                 name="organization"
                 value={formData.organization}
                 onChange={handleChange}
-                placeholder="Your organization or company"
-                className="w-full px-5 py-4 bg-cream border-2 border-transparent rounded-xl text-heading placeholder-heading-light/50 focus:outline-none focus:border-primary transition-colors"
+                placeholder={t('contact.organizationPlaceholder')}
+                className={`w-full px-5 py-4 bg-cream border-2 border-transparent rounded-xl text-heading placeholder-heading-light/50 focus:outline-none focus:border-primary transition-colors ${isRTL ? 'text-right' : ''}`}
               />
             </div>
 
             {/* Inquiry Type */}
             <div>
-              <label htmlFor="inquiryType" className="block text-heading font-medium mb-2">
-                Inquiry Type
+              <label htmlFor="inquiryType" className={`block text-heading font-medium mb-2 ${isRTL ? 'text-right' : ''}`}>
+                {t('contact.inquiryType')}
               </label>
               <select
                 id="inquiryType"
@@ -186,30 +187,30 @@ export default function Contact() {
                 value={formData.inquiryType}
                 onChange={handleChange}
                 required
-                className="w-full px-5 py-4 bg-cream border-2 border-transparent rounded-xl text-heading focus:outline-none focus:border-primary transition-colors appearance-none cursor-pointer"
-                style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%230D4A52' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center' }}
+                className={`w-full px-5 py-4 bg-cream border-2 border-transparent rounded-xl text-heading focus:outline-none focus:border-primary transition-colors appearance-none cursor-pointer ${isRTL ? 'text-right' : ''}`}
+                style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%230D4A52' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: isRTL ? 'left 1rem center' : 'right 1rem center' }}
               >
-                <option value="" disabled>Select inquiry type</option>
+                <option value="" disabled>{t('contact.selectInquiryType')}</option>
                 {inquiryTypes.map((type, index) => (
-                  <option key={index} value={type}>{type}</option>
+                  <option key={index} value={type.key}>{type.label}</option>
                 ))}
               </select>
             </div>
 
             {/* Message */}
             <div>
-              <label htmlFor="message" className="block text-heading font-medium mb-2">
-                Message
+              <label htmlFor="message" className={`block text-heading font-medium mb-2 ${isRTL ? 'text-right' : ''}`}>
+                {t('contact.message')}
               </label>
               <textarea
                 id="message"
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
-                placeholder="Tell us about your interest in ReachFood..."
+                placeholder={t('contact.messagePlaceholder')}
                 required
                 rows={6}
-                className="w-full px-5 py-4 bg-cream border-2 border-transparent rounded-xl text-heading placeholder-heading-light/50 focus:outline-none focus:border-primary transition-colors resize-none"
+                className={`w-full px-5 py-4 bg-cream border-2 border-transparent rounded-xl text-heading placeholder-heading-light/50 focus:outline-none focus:border-primary transition-colors resize-none ${isRTL ? 'text-right' : ''}`}
               />
             </div>
 
@@ -219,7 +220,7 @@ export default function Contact() {
               disabled={isSubmitting}
               className="w-full py-4 bg-primary text-white font-semibold text-lg rounded-xl hover:bg-primary-hover transition-all duration-300 shadow-lg shadow-primary/30 disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? 'Sending...' : 'Send Message'}
+              {isSubmitting ? t('contact.sending') : t('contact.sendMessage')}
             </button>
           </form>
         </div>
@@ -230,12 +231,10 @@ export default function Contact() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="font-playfair text-4xl lg:text-5xl font-bold text-heading mb-4">
-              Global Presence
+              {t('contact.globalPresence')}
             </h2>
             <p className="text-heading-light text-lg max-w-3xl mx-auto">
-              ReachFood operates globally with strategic locations that support our mission of making
-              nutrition accessible everywhere. From technology development to cultural cuisine expertise
-              and emergency response.
+              {t('contact.globalPresenceDesc')}
             </p>
           </div>
 
@@ -272,7 +271,7 @@ export default function Contact() {
       <section className="py-16 lg:py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="font-playfair text-2xl lg:text-3xl font-bold text-heading mb-8 text-center">
-            Response Times
+            {t('contact.responseTimes')}
           </h3>
           <div className="grid md:grid-cols-3 gap-6">
             {responseTimes.map((item, index) => (
@@ -292,24 +291,23 @@ export default function Contact() {
       <section className="py-20 lg:py-28 bg-heading text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="font-playfair text-3xl lg:text-4xl font-bold mb-6">
-            Ready to Transform Nutrition Access?
+            {t('contact.readyToTransform')}
           </h2>
           <p className="text-white/70 text-lg mb-8 max-w-2xl mx-auto">
-            Join organizations worldwide who are using ReachFood to provide reliable, hot nutrition
-            in any environment, anywhere, anytime.
+            {t('contact.readyToTransformDesc')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="/shop"
               className="inline-flex items-center justify-center px-8 py-4 bg-primary text-white font-semibold rounded-full hover:bg-primary-hover transition-all duration-300 shadow-lg shadow-primary/30"
             >
-              Explore Our Products
+              {t('about.exploreProducts')}
             </a>
             <a
               href="/about"
               className="inline-flex items-center justify-center px-8 py-4 bg-transparent text-white font-semibold rounded-full hover:bg-white hover:text-heading transition-all duration-300 border-2 border-white"
             >
-              Learn About Our Mission
+              {t('contact.learnAboutMission')}
             </a>
           </div>
         </div>

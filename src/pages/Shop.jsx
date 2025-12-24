@@ -3,6 +3,7 @@ import ShopHeader from '../components/shop/ShopHeader';
 import FilterSidebar from '../components/shop/FilterSidebar';
 import ProductCard from '../components/shop/ProductCard';
 import { products } from '../data/products';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Shop() {
   const [viewMode, setViewMode] = useState('grid');
@@ -18,6 +19,7 @@ export default function Shop() {
       max: 100,
     },
   });
+  const { t, isRTL } = useLanguage();
 
   const filteredAndSortedProducts = useMemo(() => {
     let result = [...products];
@@ -74,14 +76,14 @@ export default function Shop() {
       <ShopHeader />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="lg:grid lg:grid-cols-12 lg:gap-8">
+        <div className={`lg:grid lg:grid-cols-12 lg:gap-8 ${isRTL ? 'direction-rtl' : ''}`}>
           {/* Mobile Filter Toggle */}
           <div className="lg:hidden mb-6">
             <button
               onClick={() => setIsMobileFilterOpen(!isMobileFilterOpen)}
               className="w-full py-3 bg-white rounded-xl font-medium text-heading flex items-center justify-center gap-2"
             >
-              <span>Filters</span>
+              <span>{t('shop.filters')}</span>
               <span className={`transition-transform ${isMobileFilterOpen ? 'rotate-180' : ''}`}>
                 ▾
               </span>
@@ -102,7 +104,7 @@ export default function Shop() {
           </div>
 
           {/* Desktop Sidebar */}
-          <div className="hidden lg:block lg:col-span-3">
+          <div className={`hidden lg:block lg:col-span-3 ${isRTL ? 'lg:order-2' : ''}`}>
             <FilterSidebar
               filters={filters}
               setFilters={setFilters}
@@ -111,11 +113,11 @@ export default function Shop() {
           </div>
 
           {/* Products Area */}
-          <div className="lg:col-span-9">
+          <div className={`lg:col-span-9 ${isRTL ? 'lg:order-1' : ''}`}>
             {/* Toolbar */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 bg-white rounded-xl p-4">
+            <div className={`flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 bg-white rounded-xl p-4 ${isRTL ? 'sm:flex-row-reverse' : ''}`}>
               {/* View Mode Toggle */}
-              <div className="flex items-center gap-2">
+              <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <button
                   onClick={() => setViewMode('grid')}
                   className={`p-2 rounded-lg transition-colors ${
@@ -138,23 +140,23 @@ export default function Shop() {
                 >
                   <span className="text-lg">☰</span>
                 </button>
-                <span className="text-heading-light text-sm ml-4">
-                  {filteredAndSortedProducts.length} products
+                <span className={`text-heading-light text-sm ${isRTL ? 'mr-4' : 'ml-4'}`}>
+                  {filteredAndSortedProducts.length} {t('shop.products')}
                 </span>
               </div>
 
               {/* Sort Dropdown */}
-              <div className="flex items-center gap-2">
-                <span className="text-heading-light text-sm">Sort by</span>
+              <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                <span className="text-heading-light text-sm">{t('shop.sortBy')}</span>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
                   className="px-4 py-2 bg-primary text-white rounded-lg font-medium cursor-pointer focus:outline-none"
                 >
-                  <option value="featured">Featured</option>
-                  <option value="price-low">Price: Low to High</option>
-                  <option value="price-high">Price: High to Low</option>
-                  <option value="name">Name</option>
+                  <option value="featured">{t('shop.featured')}</option>
+                  <option value="price-low">{t('shop.priceLowToHigh')}</option>
+                  <option value="price-high">{t('shop.priceHighToLow')}</option>
+                  <option value="name">{t('shop.name')}</option>
                 </select>
               </div>
             </div>
@@ -163,13 +165,13 @@ export default function Shop() {
             {filteredAndSortedProducts.length === 0 ? (
               <div className="text-center py-20">
                 <p className="text-heading-light text-lg mb-4">
-                  No products match your filters
+                  {t('shop.noProducts')}
                 </p>
                 <button
                   onClick={handleClearFilters}
                   className="px-6 py-3 bg-primary text-white rounded-full font-medium hover:bg-primary-hover transition-colors"
                 >
-                  Clear Filters
+                  {t('shop.clearFilters')}
                 </button>
               </div>
             ) : (
@@ -204,7 +206,7 @@ export default function Shop() {
                     3
                   </button>
                   <span className="px-2 text-heading-light">...</span>
-                  <button className="w-10 h-10 rounded-full bg-white text-heading-light font-medium hover:bg-cream transition-colors">
+                  <button className={`w-10 h-10 rounded-full bg-white text-heading-light font-medium hover:bg-cream transition-colors ${isRTL ? 'rotate-180' : ''}`}>
                     →
                   </button>
                 </div>

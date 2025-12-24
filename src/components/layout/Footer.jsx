@@ -1,26 +1,28 @@
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const { t, isRTL } = useLanguage();
 
   const footerLinks = {
     shop: [
-      { name: 'All Meals', path: '/shop' },
-      { name: 'Asian Cuisine', path: '/shop?category=asian' },
-      { name: 'Indian Flavors', path: '/shop?category=indian' },
-      { name: 'Mediterranean', path: '/shop?category=mediterranean' },
+      { name: t('footer.allMeals'), path: '/shop' },
+      { name: t('footer.asianCuisine'), path: '/shop?category=asian' },
+      { name: t('footer.indianFlavors'), path: '/shop?category=indian' },
+      { name: t('footer.mediterranean'), path: '/shop?category=mediterranean' },
     ],
     company: [
-      { name: 'About Us', path: '/about' },
-      { name: 'Partner With Us', path: '/partner' },
-      { name: 'Sustainability', path: '/sustainability' },
-      { name: 'Careers', path: '/careers' },
+      { name: t('footer.aboutUs'), path: '/about' },
+      { name: t('footer.ourStory'), path: '/story' },
+      { name: t('footer.sustainability'), path: '/sustainability' },
+      { name: t('footer.careers'), path: '/careers' },
     ],
     support: [
-      { name: 'FAQ', path: '/faq' },
-      { name: 'Shipping', path: '/shipping' },
-      { name: 'Returns', path: '/returns' },
-      { name: 'Contact', path: '/contact' },
+      { name: t('footer.faq'), path: '/faq' },
+      { name: t('footer.shipping'), path: '/shipping' },
+      { name: t('footer.returns'), path: '/returns' },
+      { name: t('footer.contact'), path: '/contact' },
     ],
   };
 
@@ -43,7 +45,7 @@ export default function Footer() {
               />
             </Link>
             <p className="mt-4 text-heading-light leading-relaxed max-w-sm">
-              Self-heating ready meals that bring authentic flavors from around the world to your table in just 3-5 minutes. Sustainable, delicious, convenient.
+              {t('footer.description')}
             </p>
             <div className="mt-6 flex items-center gap-4">
               <a
@@ -79,7 +81,7 @@ export default function Footer() {
           {/* Shop Links */}
           <div>
             <h3 className="font-playfair text-lg font-semibold text-heading mb-4">
-              Shop
+              {t('footer.shop')}
             </h3>
             <ul className="space-y-3">
               {footerLinks.shop.map((link) => (
@@ -98,7 +100,7 @@ export default function Footer() {
           {/* Company Links */}
           <div>
             <h3 className="font-playfair text-lg font-semibold text-heading mb-4">
-              Company
+              {t('footer.company')}
             </h3>
             <ul className="space-y-3">
               {footerLinks.company.map((link) => (
@@ -117,7 +119,7 @@ export default function Footer() {
           {/* Support Links */}
           <div>
             <h3 className="font-playfair text-lg font-semibold text-heading mb-4">
-              Support
+              {t('footer.support')}
             </h3>
             <ul className="space-y-3">
               {footerLinks.support.map((link) => (
@@ -138,22 +140,22 @@ export default function Footer() {
         <div className="py-10 border-b border-heading/10">
           <div className="max-w-xl mx-auto text-center">
             <h3 className="font-playfair text-2xl font-semibold text-heading mb-2">
-              Get Fresh Updates
+              {t('footer.newsletter')}
             </h3>
             <p className="text-heading-light mb-6">
-              Subscribe for exclusive offers and new meal releases
+              {t('footer.newsletterDesc')}
             </p>
             <form className="flex flex-col sm:flex-row gap-3">
               <input
                 type="email"
-                placeholder="Enter your email"
+                placeholder={t('footer.emailPlaceholder')}
                 className="flex-1 px-6 py-3.5 bg-white rounded-full text-heading placeholder:text-heading-light/60 focus:outline-none focus:ring-2 focus:ring-primary/30 shadow-sm transition-all"
               />
               <button
                 type="submit"
                 className="px-8 py-3.5 bg-primary text-white font-semibold rounded-full hover:bg-primary-hover transition-all duration-300 hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5"
               >
-                Subscribe
+                {t('footer.subscribe')}
               </button>
             </form>
           </div>
@@ -161,13 +163,13 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-heading-light">
-          <p>© {currentYear} ReachFood. All rights reserved.</p>
+          <p>© {currentYear} {t('footer.copyright')}</p>
           <div className="flex items-center gap-6">
             <Link to="/privacy" className="hover:text-primary transition-colors">
-              Privacy Policy
+              {t('footer.privacyPolicy')}
             </Link>
             <Link to="/terms" className="hover:text-primary transition-colors">
-              Terms of Service
+              {t('footer.termsOfService')}
             </Link>
           </div>
         </div>
