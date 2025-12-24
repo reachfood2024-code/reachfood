@@ -296,7 +296,7 @@ export const translations = {
       foodAdvisor: 'Food Advisor',
       foodRDAdvisor: 'Food R&D Advisor',
       emergencyAdvisor: 'Food For Emergency Advisor',
-      techAdvisor: 'Developer & Tech Advisor',
+      techAdvisor: 'AI Advisor',
       fullStackDev: 'Full Stack Developer',
     },
 
@@ -679,7 +679,7 @@ export const translations = {
       foodAdvisor: 'مستشار غذائي',
       foodRDAdvisor: 'مستشار البحث والتطوير الغذائي',
       emergencyAdvisor: 'مستشار التغذية في حالات الطوارئ',
-      techAdvisor: 'مطور ومستشار تقني',
+      techAdvisor: 'مستشار ذكاء اصطناعي',
       fullStackDev: 'مطور Full Stack',
     },
 
