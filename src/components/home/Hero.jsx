@@ -20,7 +20,7 @@ export default function Hero() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
         <div className={`text-center ${isRTL ? 'lg:text-right' : 'lg:text-left'} max-w-2xl ${isRTL ? 'lg:mr-auto lg:ml-0' : ''}`}>
           {/* Tagline */}
-          <span className="inline-block font-dancing text-2xl sm:text-3xl text-white mb-4 mt-16 animate-[fadeInUp_0.6s_ease-out] drop-shadow-lg">
+          <span className="inline-block font-dancing text-2xl sm:text-3xl text-primary mb-4 mt-16 animate-[fadeInUp_0.6s_ease-out] drop-shadow-lg">
             {t('hero.tagline')}
           </span>
 

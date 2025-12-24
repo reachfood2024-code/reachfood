@@ -40,7 +40,7 @@ export const translations = {
     // Products Section
     products: {
       title: 'Our Ready Meals',
-      subtitle: 'Discover our selection of authentic, self-heating meals ready in minutes.',
+      subtitle: 'Discover our range of nutritious, health-supporting meals, powered by eco-friendly self-heating packaging and innovative patented technology.',
       addToCart: 'Add to Cart',
       viewAllMeals: 'View All Meals',
       save: 'Save',
@@ -484,7 +484,7 @@ export const translations = {
     // Products Section
     products: {
       title: 'وجباتنا الجاهزة',
-      subtitle: 'اكتشف مجموعتنا من الوجبات الأصيلة ذاتية التسخين الجاهزة في دقائق.',
+      subtitle: 'اكتشف مجموعتنا من الوجبات المغذية الداعمة للصحة، والمزوّدة بتغليف ذاتيّ التسخين صديق للبيئة، والمدعوم بتقنية مبتكرة حاصلة على براءة اختراع',
       addToCart: 'أضف للسلة',
       viewAllMeals: 'عرض جميع الوجبات',
       save: 'وفر',
