@@ -9,6 +9,8 @@ import About from './pages/About'
 import Contact from './pages/Contact'
 import Partner from './pages/Partner'
 import ProductCheckout from './pages/ProductCheckout'
+import Checkout from './pages/Checkout'
+import OrderConfirmation from './pages/OrderConfirmation'
 
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/product/:id" element={<ProductCheckout />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/order-confirmation" element={<OrderConfirmation />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/partner" element={<Partner />} />

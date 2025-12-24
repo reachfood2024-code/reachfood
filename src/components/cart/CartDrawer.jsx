@@ -1,6 +1,6 @@
 import { useCart } from '../../context/CartContext';
 import { useLanguage } from '../../context/LanguageContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { productTranslations } from '../../data/translations';
 
 export default function CartDrawer() {
@@ -15,6 +15,12 @@ export default function CartDrawer() {
     formatPrice,
   } = useCart();
   const { t, language, isRTL } = useLanguage();
+  const navigate = useNavigate();
+
+  const handleCheckout = () => {
+    closeCart();
+    navigate('/checkout');
+  };
 
   return (
     <>
@@ -153,7 +159,10 @@ export default function CartDrawer() {
 
               {/* Action Buttons */}
               <div className="space-y-3">
-                <button className="w-full py-4 bg-primary text-white font-semibold rounded-full hover:bg-primary-hover transition-colors shadow-lg shadow-primary/30">
+                <button
+                  onClick={handleCheckout}
+                  className="w-full py-4 bg-primary text-white font-semibold rounded-full hover:bg-primary-hover transition-colors shadow-lg shadow-primary/30"
+                >
                   {t('cart.checkout')}
                 </button>
                 <Link
