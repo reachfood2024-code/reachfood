@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { products } from '../../data/products';
+import { productTranslations } from '../../data/translations';
 
 export default function ProductsGrid() {
   const { addToCart, formatPrice } = useCart();
+  const { t, language } = useLanguage();
   const displayProducts = products.slice(0, 8);
 
   const handleAddToCart = (e, product) => {
@@ -17,11 +20,11 @@ export default function ProductsGrid() {
         {/* Section Header */}
         <div className="text-center mb-16">
           <h2 className="font-playfair text-4xl lg:text-5xl font-bold text-heading mb-4">
-            Our Ready Meals
+            {t('products.title')}
           </h2>
           <p className="text-heading-light text-lg max-w-2xl mx-auto">
-            Discover our selection of authentic, self-heating meals ready in minutes.
-            <span className="text-primary font-medium"> Get 20% off your first order!</span>
+            {t('products.subtitle')}
+            <span className="text-primary font-medium"> {t('products.discount')}</span>
           </p>
         </div>
 
@@ -37,7 +40,7 @@ export default function ProductsGrid() {
               {product.originalPrice && (
                 <div className="absolute top-6 right-6 z-10">
                   <span className="bg-teal text-white text-xs font-bold px-3 py-1 rounded-full">
-                    Save {Math.round((1 - product.price / product.originalPrice) * 100)}%
+                    {t('products.save')} {Math.round((1 - product.price / product.originalPrice) * 100)}%
                   </span>
                 </div>
               )}
@@ -66,7 +69,7 @@ export default function ProductsGrid() {
                       onClick={(e) => handleAddToCart(e, product)}
                       className="px-6 py-3 bg-white text-heading font-semibold rounded-full transform translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-primary hover:text-white"
                     >
-                      Add to Cart
+                      {t('products.addToCart')}
                     </button>
                   </div>
                 </div>
@@ -76,7 +79,7 @@ export default function ProductsGrid() {
               <div className="text-center">
                 <Link to={`/product/${product.id}`}>
                   <h3 className="font-playfair text-lg font-semibold text-heading hover:text-primary transition-colors mb-2">
-                    {product.name}
+                    {productTranslations[language]?.[product.id]?.name || product.name}
                   </h3>
                 </Link>
                 <div className="flex items-center justify-center gap-2">
@@ -100,7 +103,7 @@ export default function ProductsGrid() {
             to="/shop"
             className="btn-primary inline-flex items-center justify-center px-10 py-4 bg-primary text-white font-semibold text-lg rounded-full hover:bg-primary-hover shadow-lg shadow-primary/30"
           >
-            View All Meals
+            {t('products.viewAllMeals')}
           </Link>
         </div>
       </div>

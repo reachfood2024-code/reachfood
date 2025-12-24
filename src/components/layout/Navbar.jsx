@@ -33,7 +33,7 @@ export default function Navbar() {
 
   const pagesLinks = [
     { name: t('nav.aboutUs'), path: '/about' },
-    { name: t('nav.ourStory'), path: '/story' },
+    { name: t('nav.partnerWithUs'), path: '/partner' },
     { name: t('nav.faq'), path: '/faq' },
   ];
 

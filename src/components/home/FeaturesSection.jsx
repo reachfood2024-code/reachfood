@@ -1,29 +1,40 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { products, categories } from '../../data/products';
+import { productTranslations } from '../../data/translations';
 
 export default function FeaturesSection() {
   const [activeCategory, setActiveCategory] = useState('all');
   const { addToCart, formatPrice } = useCart();
+  const { t, language, isRTL } = useLanguage();
 
   const features = [
     {
-      title: 'Quality Ingredients',
-      description:
-        'Premium ingredients sourced from trusted suppliers, ensuring every meal is packed with nutrition and flavor.',
+      title: t('features.qualityIngredients'),
+      description: t('features.qualityIngredientsDesc'),
     },
     {
-      title: 'Ready in 3-5 Minutes',
-      description:
-        'Our innovative self-heating technology delivers hot, delicious meals anywhere, no microwave needed.',
+      title: t('features.readyInMinutes'),
+      description: t('features.readyInMinutesDesc'),
     },
     {
-      title: 'Fast Delivery',
-      description:
-        'Free shipping on orders over $50. Get your favorite meals delivered fresh to your doorstep.',
+      title: t('features.fastDelivery'),
+      description: t('features.fastDeliveryDesc'),
     },
   ];
+
+  const categoryTranslations = {
+    'all': t('categories.allMeals'),
+    'asian': t('categories.asianCuisine'),
+    'indian': t('categories.indianFlavors'),
+    'mediterranean': t('categories.mediterranean'),
+    'italian': t('categories.italianClassics'),
+    'mexican': t('categories.mexicanFavorites'),
+    'american': t('categories.americanComfort'),
+    'dessert': t('categories.desserts'),
+  };
 
   const filteredProducts =
     activeCategory === 'all'
@@ -39,12 +50,12 @@ export default function FeaturesSection() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="font-playfair text-3xl lg:text-4xl font-bold text-heading mb-3">
-              Our Promise
+              {t('features.ourPromise')}
             </h2>
             <p className="text-heading-light">
-              Get 40% off your first order{' '}
+              {t('features.discountOffer')}{' '}
               <span className="text-primary font-medium underline cursor-pointer">
-                Learn more
+                {t('features.learnMore')}
               </span>
             </p>
           </div>
@@ -71,11 +82,11 @@ export default function FeaturesSection() {
 
       {/* Famous Items Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
+        <div className={`grid lg:grid-cols-12 gap-10 lg:gap-16 ${isRTL ? 'direction-rtl' : ''}`}>
           {/* Left - Category Filter */}
           <div className="lg:col-span-4">
-            <h2 className="font-playfair text-4xl lg:text-5xl font-bold text-heading mb-8">
-              Famous Items
+            <h2 className={`font-playfair text-4xl lg:text-5xl font-bold text-heading mb-8 ${isRTL ? 'text-right' : ''}`}>
+              {t('features.famousItems')}
             </h2>
 
             <div className="space-y-3">
@@ -83,16 +94,16 @@ export default function FeaturesSection() {
                 <button
                   key={category.id}
                   onClick={() => setActiveCategory(category.id)}
-                  className={`w-full text-left px-6 py-4 rounded-full font-medium transition-all duration-300 ${
+                  className={`w-full ${isRTL ? 'text-right' : 'text-left'} px-6 py-4 rounded-full font-medium transition-all duration-300 ${
                     activeCategory === category.id
                       ? 'bg-teal text-white shadow-lg'
                       : 'bg-white text-heading hover:bg-cream border border-heading/10'
                   }`}
                 >
-                  <span className="mr-2">
+                  <span className={isRTL ? 'ml-2' : 'mr-2'}>
                     {activeCategory === category.id ? '●' : '○'}
                   </span>
-                  {category.name}
+                  {categoryTranslations[category.id] || category.name}
                 </button>
               ))}
             </div>
@@ -118,7 +129,7 @@ export default function FeaturesSection() {
                       {/* Product Info Overlay */}
                       <div className="absolute bottom-0 left-0 right-0 p-6">
                         <h3 className="font-playfair text-xl font-semibold text-white mb-1">
-                          {product.name}
+                          {productTranslations[language]?.[product.id]?.name || product.name}
                         </h3>
                         <p className="text-primary font-bold text-lg">
                           {formatPrice(product.price)}
@@ -142,13 +153,13 @@ export default function FeaturesSection() {
             </div>
 
             {/* View More */}
-            <div className="mt-8 text-center lg:text-right">
+            <div className={`mt-8 text-center ${isRTL ? 'lg:text-left' : 'lg:text-right'}`}>
               <Link
                 to="/shop"
                 className="inline-flex items-center text-heading font-semibold hover:text-primary transition-colors group"
               >
-                View All {activeCategory !== 'all' ? categories.find(c => c.id === activeCategory)?.name : 'Meals'}
-                <span className="ml-2 transition-transform group-hover:translate-x-1">→</span>
+                {t('features.viewAll')} {activeCategory !== 'all' ? categoryTranslations[activeCategory] : categoryTranslations['all']}
+                <span className={`${isRTL ? 'mr-2 group-hover:-translate-x-1 rotate-180' : 'ml-2 group-hover:translate-x-1'} transition-transform`}>→</span>
               </Link>
             </div>
           </div>

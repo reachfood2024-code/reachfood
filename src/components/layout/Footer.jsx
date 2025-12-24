@@ -12,7 +12,7 @@ export default function Footer() {
     ],
     company: [
       { name: 'About Us', path: '/about' },
-      { name: 'Our Story', path: '/story' },
+      { name: 'Partner With Us', path: '/partner' },
       { name: 'Sustainability', path: '/sustainability' },
       { name: 'Careers', path: '/careers' },
     ],

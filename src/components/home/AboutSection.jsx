@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function AboutSection() {
+  const { t, isRTL } = useLanguage();
+
   return (
     <section
       className="py-20 lg:py-32 relative overflow-hidden"
@@ -22,47 +25,42 @@ export default function AboutSection() {
           </div>
 
           {/* Right - Content */}
-          <div className="text-center lg:text-left bg-white/90 backdrop-blur-sm rounded-3xl p-8 lg:p-12">
+          <div className={`text-center ${isRTL ? 'lg:text-right' : 'lg:text-left'} bg-white/90 backdrop-blur-sm rounded-3xl p-8 lg:p-12`}>
             <h2 className="font-playfair text-4xl lg:text-5xl font-bold text-heading mb-4">
-              About Us
+              {t('aboutSection.title')}
             </h2>
-            <p className="text-primary font-medium mb-6">Why choose us</p>
+            <p className="text-primary font-medium mb-6">{t('aboutSection.subtitle')}</p>
 
             <p className="text-heading-light text-lg leading-relaxed mb-8">
-              At ReachFood, we believe everyone deserves access to delicious, authentic meals
-              regardless of where they are. Our innovative self-heating technology brings
-              restaurant-quality dishes to your table in minutes, without the need for
-              microwaves, stoves, or electricity.
+              {t('aboutSection.description')}
             </p>
 
             {/* Features */}
             <div className="space-y-6 mb-10">
-              <div className="flex items-start gap-4">
+              <div className={`flex items-start gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
                   <span className="text-primary text-xl font-bold">*</span>
                 </div>
-                <div className="text-left">
+                <div className={isRTL ? 'text-right' : 'text-left'}>
                   <h3 className="font-playfair text-xl font-semibold text-heading mb-1">
-                    Culturally Authentic
+                    {t('aboutSection.culturallyAuthentic')}
                   </h3>
                   <p className="text-heading-light">
-                    Recipes developed with chefs from around the world to bring you
-                    genuine flavors and traditional cooking methods.
+                    {t('aboutSection.culturallyAuthenticDesc')}
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-4">
+              <div className={`flex items-start gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <div className="flex-shrink-0 w-12 h-12 bg-teal/10 rounded-xl flex items-center justify-center">
                   <span className="text-teal text-xl font-bold">*</span>
                 </div>
-                <div className="text-left">
+                <div className={isRTL ? 'text-right' : 'text-left'}>
                   <h3 className="font-playfair text-xl font-semibold text-heading mb-1">
-                    Sustainable Packaging
+                    {t('aboutSection.sustainablePackaging')}
                   </h3>
                   <p className="text-heading-light">
-                    Our eco-friendly packaging is 100% recyclable, reducing environmental
-                    impact while keeping your meal perfectly heated.
+                    {t('aboutSection.sustainablePackagingDesc')}
                   </p>
                 </div>
               </div>
@@ -74,7 +72,7 @@ export default function AboutSection() {
                 to="/about"
                 className="btn-primary inline-flex items-center justify-center px-8 py-4 bg-primary text-white font-semibold rounded-full hover:bg-primary-hover shadow-lg shadow-primary/30"
               >
-                Learn More
+                {t('hero.learnMore')}
               </Link>
             </div>
           </div>
