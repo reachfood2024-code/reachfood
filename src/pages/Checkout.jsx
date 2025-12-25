@@ -3,6 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
 import { productTranslations } from '../data/translations';
+import { analytics } from '../services/analytics';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1';
 
 export default function Checkout() {
   const { cartItems, cartTotal, updateQuantity, removeFromCart, formatPrice } = useCart();
@@ -99,11 +102,57 @@ export default function Checkout() {
 
     setIsSubmitting(true);
 
-    const orderNumber = Math.floor(100000 + Math.random() * 900000);
+    // Get analytics IDs for tracking
+    const { visitorId, sessionId } = analytics.getIds();
 
-    // Prepare order data
+    // Prepare order items for API
+    const apiItems = cartItems.map(item => ({
+      productId: item.id,
+      productName: productTranslations['en']?.[item.id]?.name || item.name,
+      quantity: item.quantity,
+      unitPrice: item.price,
+      totalPrice: item.price * item.quantity
+    }));
+
+    let orderNumber;
+
+    try {
+      // Create order in database for analytics tracking
+      const response = await fetch(`${API_URL}/orders`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId,
+          visitorId,
+          customerName: formData.fullName,
+          customerEmail: formData.email,
+          customerPhone: formData.phone,
+          shippingAddress: { address: formData.address },
+          items: apiItems,
+          subtotal: cartTotal,
+          shippingCost: 0,
+          tax: 0,
+          discount: 0,
+          total: cartTotal,
+          currency: 'USD'
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        orderNumber = data.data.orderNumber;
+      } else {
+        // Fallback to random order number if API fails
+        orderNumber = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
+      }
+    } catch (error) {
+      console.warn('Failed to create order in database:', error);
+      orderNumber = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
+    }
+
+    // Prepare order data for Google Apps Script
     const orderData = {
-      orderNumber: orderNumber.toString(),
+      orderNumber: orderNumber,
       items: cartItems.map(item => ({
         id: item.id,
         name: productTranslations['en']?.[item.id]?.name || item.name,

@@ -3,6 +3,32 @@ import { query } from '../database/db.js';
 
 const router = Router();
 
+// Helper: Ensure session exists in database
+async function ensureSession(sessionId, visitorId, req) {
+  if (!sessionId) return null;
+
+  const existing = await query(
+    'SELECT session_id FROM sessions WHERE session_id = $1',
+    [sessionId]
+  );
+
+  if (existing.rows.length > 0) {
+    return sessionId;
+  }
+
+  // Auto-create session
+  const forwardedFor = req.headers['x-forwarded-for'];
+  const ip = forwardedFor ? forwardedFor.split(',')[0].trim() : req.socket?.remoteAddress;
+  await query(
+    `INSERT INTO sessions (session_id, visitor_id, ip_address, landing_page)
+     VALUES ($1, $2, $3, $4)
+     ON CONFLICT (session_id) DO NOTHING`,
+    [sessionId, visitorId, ip || null, '/checkout']
+  );
+
+  return sessionId;
+}
+
 // ============================================
 // GET /api/v1/orders - List recent orders
 // ============================================
@@ -74,6 +100,9 @@ router.post('/', async (req, res, next) => {
       currency = 'USD'
     } = req.body;
 
+    // Ensure session exists before creating order
+    const validSessionId = await ensureSession(sessionId, visitorId, req);
+
     // Generate order number
     const orderNumResult = await query('SELECT generate_order_number() as order_number');
     const orderNumber = orderNumResult.rows[0].order_number;
@@ -88,7 +117,7 @@ router.post('/', async (req, res, next) => {
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
       RETURNING id, order_number
     `, [
-      orderNumber, sessionId, visitorId,
+      orderNumber, validSessionId, visitorId,
       customerName, customerEmail, customerPhone,
       JSON.stringify(shippingAddress), subtotal, shippingCost, tax, discount, total, currency
     ]);
@@ -107,7 +136,7 @@ router.post('/', async (req, res, next) => {
     await query(`
       INSERT INTO events (session_id, visitor_id, event_type, event_data, page_path)
       VALUES ($1, $2, 'order_complete', $3, '/checkout')
-    `, [sessionId, visitorId, JSON.stringify({ orderNumber, total, itemCount: items.length })]);
+    `, [validSessionId, visitorId, JSON.stringify({ orderNumber, total, itemCount: items.length })]);
 
     res.status(201).json({
       data: {
