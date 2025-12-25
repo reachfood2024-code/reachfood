@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import analytics from '../services/analytics';
 
 const CartContext = createContext();
 
@@ -27,6 +28,9 @@ export function CartProvider({ children }) {
   }, [currency]);
 
   const addToCart = (product) => {
+    // Track add to cart event
+    analytics.addToCart(product, 1);
+
     setCartItems(prevItems => {
       const existingItem = prevItems.find(item => item.id === product.id);
       if (existingItem) {
@@ -41,6 +45,12 @@ export function CartProvider({ children }) {
   };
 
   const removeFromCart = (productId) => {
+    // Track remove from cart event
+    const item = cartItems.find(i => i.id === productId);
+    if (item) {
+      analytics.removeFromCart(item, item.quantity);
+    }
+
     setCartItems(prevItems => prevItems.filter(item => item.id !== productId));
   };
 

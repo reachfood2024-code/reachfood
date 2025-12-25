@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 import CartDrawer from './components/cart/CartDrawer'
@@ -12,8 +12,21 @@ import FAQ from './pages/FAQ'
 import ProductCheckout from './pages/ProductCheckout'
 import Checkout from './pages/Checkout'
 import OrderConfirmation from './pages/OrderConfirmation'
+import Dashboard from './pages/admin/Dashboard'
 
 function App() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
+
+  // Admin routes render without main layout
+  if (isAdminRoute) {
+    return (
+      <Routes>
+        <Route path="/admin" element={<Dashboard />} />
+      </Routes>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
