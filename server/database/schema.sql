@@ -37,7 +37,6 @@ CREATE TABLE sessions (
 
 CREATE INDEX idx_sessions_visitor ON sessions(visitor_id);
 CREATE INDEX idx_sessions_started ON sessions(started_at DESC);
-CREATE INDEX idx_sessions_date ON sessions(DATE(started_at));
 
 -- ============================================
 -- PAGE VIEWS: Individual page visits
@@ -54,7 +53,7 @@ CREATE TABLE page_views (
 
 CREATE INDEX idx_page_views_session ON page_views(session_id);
 CREATE INDEX idx_page_views_path ON page_views(page_path);
-CREATE INDEX idx_page_views_date ON page_views(DATE(created_at));
+CREATE INDEX idx_page_views_created ON page_views(created_at DESC);
 
 -- ============================================
 -- EVENTS: Generic event tracking table
@@ -82,8 +81,8 @@ CREATE TABLE events (
 CREATE INDEX idx_events_type ON events(event_type);
 CREATE INDEX idx_events_visitor ON events(visitor_id);
 CREATE INDEX idx_events_session ON events(session_id);
-CREATE INDEX idx_events_date ON events(DATE(created_at));
-CREATE INDEX idx_events_type_date ON events(event_type, DATE(created_at));
+CREATE INDEX idx_events_created ON events(created_at DESC);
+CREATE INDEX idx_events_type_created ON events(event_type, created_at DESC);
 CREATE INDEX idx_events_data ON events USING GIN(event_data);
 
 -- ============================================
@@ -104,7 +103,7 @@ CREATE TABLE email_subscriptions (
 );
 
 CREATE UNIQUE INDEX idx_email_subs_email ON email_subscriptions(email) WHERE is_active = TRUE;
-CREATE INDEX idx_email_subs_date ON email_subscriptions(DATE(subscribed_at));
+CREATE INDEX idx_email_subs_subscribed ON email_subscriptions(subscribed_at DESC);
 
 CREATE TRIGGER set_email_subs_updated
   BEFORE UPDATE ON email_subscriptions
@@ -152,7 +151,7 @@ CREATE TABLE orders (
 
 CREATE INDEX idx_orders_number ON orders(order_number);
 CREATE INDEX idx_orders_status ON orders(status);
-CREATE INDEX idx_orders_date ON orders(DATE(ordered_at));
+CREATE INDEX idx_orders_ordered ON orders(ordered_at DESC);
 CREATE INDEX idx_orders_visitor ON orders(visitor_id);
 
 CREATE TRIGGER set_orders_updated
@@ -194,8 +193,8 @@ CREATE TABLE cart_events (
 
 CREATE INDEX idx_cart_events_visitor ON cart_events(visitor_id);
 CREATE INDEX idx_cart_events_product ON cart_events(product_id);
-CREATE INDEX idx_cart_events_date ON cart_events(DATE(created_at));
-CREATE INDEX idx_cart_events_type_date ON cart_events(event_type, DATE(created_at));
+CREATE INDEX idx_cart_events_created ON cart_events(created_at DESC);
+CREATE INDEX idx_cart_events_type_created ON cart_events(event_type, created_at DESC);
 
 -- ============================================
 -- DAILY METRICS: Pre-aggregated daily stats
