@@ -99,21 +99,63 @@ export default function Checkout() {
 
     setIsSubmitting(true);
 
-    // Simulate order processing
-    setTimeout(() => {
-      // Navigate to order confirmation with order data
+    const orderNumber = Math.floor(100000 + Math.random() * 900000);
+
+    // Prepare order data
+    const orderData = {
+      orderNumber: orderNumber.toString(),
+      items: cartItems.map(item => ({
+        id: item.id,
+        name: productTranslations['en']?.[item.id]?.name || item.name,
+        quantity: item.quantity,
+        price: item.price
+      })),
+      total: cartTotal,
+      customer: formData
+    };
+
+    try {
+      // Send order to Google Apps Script
+      const GOOGLE_SCRIPT_URL = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
+
+      if (GOOGLE_SCRIPT_URL) {
+        await fetch(GOOGLE_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(orderData)
+        });
+      }
+
+      // Navigate to order confirmation
       navigate('/order-confirmation', {
         state: {
           orderData: {
             items: cartItems,
             total: cartTotal,
             customer: formData,
-            orderNumber: Math.floor(100000 + Math.random() * 900000)
+            orderNumber: orderNumber
           }
         }
       });
+    } catch (error) {
+      console.error('Order submission error:', error);
+      // Still navigate to confirmation even if email fails
+      navigate('/order-confirmation', {
+        state: {
+          orderData: {
+            items: cartItems,
+            total: cartTotal,
+            customer: formData,
+            orderNumber: orderNumber
+          }
+        }
+      });
+    } finally {
       setIsSubmitting(false);
-    }, 1000);
+    }
   };
 
   const deliveryFee = 0; // Free delivery
