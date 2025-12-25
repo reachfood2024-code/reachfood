@@ -17,13 +17,14 @@ async function ensureSession(sessionId, visitorId, req) {
     return sessionId;
   }
 
-  // Auto-create session
-  const ip = req.headers['x-forwarded-for'] || req.socket?.remoteAddress;
+  // Auto-create session - get first IP from x-forwarded-for (may contain multiple)
+  const forwardedFor = req.headers['x-forwarded-for'];
+  const ip = forwardedFor ? forwardedFor.split(',')[0].trim() : req.socket?.remoteAddress;
   await query(
     `INSERT INTO sessions (session_id, visitor_id, ip_address, landing_page)
      VALUES ($1, $2, $3, $4)
      ON CONFLICT (session_id) DO NOTHING`,
-    [sessionId, visitorId, ip, '/']
+    [sessionId, visitorId, ip || null, '/']
   );
 
   return sessionId;
