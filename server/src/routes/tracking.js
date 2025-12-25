@@ -20,10 +20,10 @@ async function ensureSession(sessionId, visitorId, req) {
   // Auto-create session
   const ip = req.headers['x-forwarded-for'] || req.socket?.remoteAddress;
   await query(
-    `INSERT INTO sessions (session_id, visitor_id, ip_address, device_type, landing_page)
-     VALUES ($1, $2, $3, $4, $5)
+    `INSERT INTO sessions (session_id, visitor_id, ip_address, landing_page)
+     VALUES ($1, $2, $3, $4)
      ON CONFLICT (session_id) DO NOTHING`,
-    [sessionId, visitorId, ip, 'unknown', '/']
+    [sessionId, visitorId, ip, '/']
   );
 
   return sessionId;
