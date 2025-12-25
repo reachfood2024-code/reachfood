@@ -25,7 +25,7 @@ function saveToSpreadsheet(data) {
   } else {
     spreadsheet = SpreadsheetApp.create(SPREADSHEET_NAME);
     var sheet = spreadsheet.getActiveSheet();
-    sheet.appendRow(["Order Number", "Date", "Customer Name", "Email", "Phone", "Address", "Items", "Total (SAR)", "Status"]);
+    sheet.appendRow(["Order Number", "Date", "Customer Name", "Email", "Phone", "Address", "Items", "Total ($)", "Status"]);
     sheet.getRange(1, 1, 1, 9).setFontWeight("bold").setBackground("#f3f4f6");
   }
   var sheet = spreadsheet.getActiveSheet();
@@ -33,7 +33,7 @@ function saveToSpreadsheet(data) {
   for (var i = 0; i < data.items.length; i++) {
     var item = data.items[i];
     if (i > 0) itemsList += ", ";
-    itemsList += item.name + " x" + item.quantity + " (" + item.price + " SAR)";
+    itemsList += item.name + " x" + item.quantity + " ($" + item.price + ")";
   }
   sheet.appendRow([
     data.orderNumber,
@@ -54,8 +54,8 @@ function sendEmailNotification(data) {
     var item = data.items[i];
     itemsHtml += "<tr><td style='padding:12px;border-bottom:1px solid #eee'>" + item.name + "</td>";
     itemsHtml += "<td style='padding:12px;border-bottom:1px solid #eee;text-align:center'>" + item.quantity + "</td>";
-    itemsHtml += "<td style='padding:12px;border-bottom:1px solid #eee;text-align:right'>" + item.price + " SAR</td>";
-    itemsHtml += "<td style='padding:12px;border-bottom:1px solid #eee;text-align:right'>" + (item.price * item.quantity) + " SAR</td></tr>";
+    itemsHtml += "<td style='padding:12px;border-bottom:1px solid #eee;text-align:right'>$" + item.price + "</td>";
+    itemsHtml += "<td style='padding:12px;border-bottom:1px solid #eee;text-align:right'>$" + (item.price * item.quantity) + "</td></tr>";
   }
 
   var html = "<!DOCTYPE html><html><head><style>";
@@ -79,13 +79,13 @@ function sendEmailNotification(data) {
   html += itemsHtml + "</tbody></table>";
   html += "<div style='text-align:right;background:#f9fafb;padding:20px;border-radius:8px'>";
   html += "<p>Delivery: <strong>FREE</strong></p>";
-  html += "<p class='total'>Total: " + data.total + " SAR</p></div>";
+  html += "<p class='total'>Total: $" + data.total + "</p></div>";
   html += "<p><strong>Payment:</strong> Cash on Delivery</p>";
   html += "</div></div></body></html>";
 
   MailApp.sendEmail({
     to: YOUR_EMAIL,
-    subject: "New Order #" + data.orderNumber + " - " + data.customer.fullName + " - " + data.total + " SAR",
+    subject: "New Order #" + data.orderNumber + " - " + data.customer.fullName + " - $" + data.total,
     htmlBody: html
   });
 }
@@ -96,7 +96,7 @@ function sendCustomerConfirmation(data) {
     var item = data.items[i];
     itemsHtml += "<tr><td style='padding:12px;border-bottom:1px solid #eee'>" + item.name + "</td>";
     itemsHtml += "<td style='padding:12px;border-bottom:1px solid #eee;text-align:center'>" + item.quantity + "</td>";
-    itemsHtml += "<td style='padding:12px;border-bottom:1px solid #eee;text-align:right'>" + (item.price * item.quantity) + " SAR</td></tr>";
+    itemsHtml += "<td style='padding:12px;border-bottom:1px solid #eee;text-align:right'>$" + (item.price * item.quantity) + "</td></tr>";
   }
 
   var html = "<!DOCTYPE html><html><head><style>";
@@ -118,7 +118,7 @@ function sendCustomerConfirmation(data) {
   html += itemsHtml + "</tbody></table>";
   html += "<div style='text-align:right;background:#f9fafb;padding:20px;border-radius:8px'>";
   html += "<p>Delivery: <strong>FREE</strong></p>";
-  html += "<p class='total'>Total: " + data.total + " SAR</p></div>";
+  html += "<p class='total'>Total: $" + data.total + "</p></div>";
   html += "<div class='info'><p><strong>Delivery Address:</strong><br>" + data.customer.address + "</p>";
   html += "<p><strong>Payment:</strong> Cash on Delivery</p>";
   html += "<p><strong>Estimated Delivery:</strong> 3-5 business days</p></div>";
