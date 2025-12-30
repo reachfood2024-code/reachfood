@@ -54,6 +54,16 @@ const saveStatuses = (statuses) => {
   }
 };
 
+// Clear all saved data from localStorage
+const clearAllData = () => {
+  try {
+    localStorage.removeItem(ORDER_STATUS_KEY);
+    localStorage.removeItem(REVENUE_ADJUSTMENT_KEY);
+  } catch (e) {
+    console.warn('Failed to clear data:', e);
+  }
+};
+
 export default function Dashboard() {
   const { handleLogout } = useAdminAuth();
   const [dateRange, setDateRange] = useState('30');
@@ -157,6 +167,15 @@ export default function Dashboard() {
       });
     } catch (err) {
       console.warn('API update failed, status saved locally:', err.message);
+    }
+  };
+
+  // Reset all order data to fresh state
+  const handleResetData = () => {
+    if (window.confirm('Are you sure you want to reset all order data? This will clear all status changes and revenue adjustments.')) {
+      clearAllData();
+      setOrderStatuses({});
+      setRevenueAdjustment(0);
     }
   };
 
@@ -291,6 +310,12 @@ export default function Dashboard() {
               >
                 Back to Site
               </Link>
+              <button
+                onClick={handleResetData}
+                className="px-4 py-2 text-sm text-white bg-gray-500 hover:bg-gray-600 rounded-lg transition-colors"
+              >
+                Reset Data
+              </button>
               <button
                 onClick={handleLogout}
                 className="px-4 py-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors"
