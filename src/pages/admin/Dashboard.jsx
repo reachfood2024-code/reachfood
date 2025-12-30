@@ -5,12 +5,34 @@ import MetricCard from '../../components/admin/MetricCard';
 import LineChart from '../../components/admin/LineChart';
 import AreaChart from '../../components/admin/AreaChart';
 import BarChart from '../../components/admin/BarChart';
-import DataTable, { StatusBadge } from '../../components/admin/DataTable';
+import DataTable, { StatusSelect } from '../../components/admin/DataTable';
 import { useAdminAuth } from '../../components/admin/AdminAuth';
 // Fallback mock data for when API is unavailable
 import { dashboardData as mockData } from '../../data/dashboardMockData';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1';
+
+// LocalStorage key for order status persistence
+const ORDER_STATUS_KEY = 'reachfood_order_statuses';
+
+// Load saved order statuses from localStorage
+const loadSavedStatuses = () => {
+  try {
+    const saved = localStorage.getItem(ORDER_STATUS_KEY);
+    return saved ? JSON.parse(saved) : {};
+  } catch {
+    return {};
+  }
+};
+
+// Save order statuses to localStorage
+const saveStatuses = (statuses) => {
+  try {
+    localStorage.setItem(ORDER_STATUS_KEY, JSON.stringify(statuses));
+  } catch (e) {
+    console.warn('Failed to save order statuses:', e);
+  }
+};
 
 export default function Dashboard() {
   const { handleLogout } = useAdminAuth();
@@ -18,6 +40,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
+  const [orderStatuses, setOrderStatuses] = useState(loadSavedStatuses);
 
   // Fetch data from API
   useEffect(() => {
@@ -68,9 +91,34 @@ export default function Dashboard() {
     fetchData();
   }, [dateRange]);
 
+  // Handle order status change
+  const handleStatusChange = async (orderId, newStatus) => {
+    // Update local state
+    const updatedStatuses = { ...orderStatuses, [orderId]: newStatus };
+    setOrderStatuses(updatedStatuses);
+    saveStatuses(updatedStatuses);
+
+    // Try to update via API
+    try {
+      await fetch(`${API_URL}/orders/${orderId}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      });
+    } catch (err) {
+      console.warn('API update failed, status saved locally:', err.message);
+    }
+  };
+
   // Use mock data while loading or if no data
   const displayData = data || mockData;
-  const { metrics, userBehaviorTrend, ordersTrend, addToCartTrend, emailSubmissionsTrend, ordersByProduct, recentOrders, trafficSources } = displayData;
+  const { metrics, userBehaviorTrend, ordersTrend, addToCartTrend, emailSubmissionsTrend, ordersByProduct, trafficSources } = displayData;
+
+  // Apply saved statuses to orders
+  const recentOrders = (displayData.recentOrders || []).map(order => ({
+    ...order,
+    status: orderStatuses[order.id] || order.status
+  }));
 
   // Table column configurations
   const orderColumns = [
@@ -86,7 +134,13 @@ export default function Dashboard() {
     {
       key: 'status',
       label: 'Status',
-      render: (value) => <StatusBadge status={value} />
+      render: (value, row) => (
+        <StatusSelect
+          status={value}
+          orderId={row.id}
+          onStatusChange={handleStatusChange}
+        />
+      )
     },
     { key: 'date', label: 'Date' }
   ];

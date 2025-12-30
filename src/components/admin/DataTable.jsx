@@ -1,6 +1,6 @@
 // DataTable - Reusable table component for dashboard
 
-export default function DataTable({ title, columns, data, onViewAll }) {
+export default function DataTable({ title, columns, data, onViewAll, onRowUpdate }) {
   if (!data || data.length === 0) {
     return (
       <div className="bg-white rounded-2xl p-6 shadow-sm">
@@ -46,7 +46,7 @@ export default function DataTable({ title, columns, data, onViewAll }) {
               >
                 {columns.map((col, colIndex) => {
                   const value = row[col.key];
-                  const displayValue = col.render ? col.render(value, row) : value;
+                  const displayValue = col.render ? col.render(value, row, onRowUpdate) : value;
 
                   return (
                     <td
@@ -73,6 +73,9 @@ export default function DataTable({ title, columns, data, onViewAll }) {
   );
 }
 
+// Available order statuses
+const ORDER_STATUSES = ['pending', 'processing', 'shipped', 'completed', 'cancelled'];
+
 // Status badge helper component
 export function StatusBadge({ status }) {
   const statusStyles = {
@@ -87,5 +90,37 @@ export function StatusBadge({ status }) {
     <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium capitalize ${statusStyles[status] || statusStyles.pending}`}>
       {status}
     </span>
+  );
+}
+
+// Editable status select component
+export function StatusSelect({ status, orderId, onStatusChange }) {
+  const statusStyles = {
+    completed: 'bg-green-50 border-green-300 text-green-700',
+    processing: 'bg-yellow-50 border-yellow-300 text-yellow-700',
+    shipped: 'bg-blue-50 border-blue-300 text-blue-700',
+    cancelled: 'bg-red-50 border-red-300 text-red-700',
+    pending: 'bg-gray-50 border-gray-300 text-gray-700'
+  };
+
+  const handleChange = (e) => {
+    const newStatus = e.target.value;
+    if (onStatusChange) {
+      onStatusChange(orderId, newStatus);
+    }
+  };
+
+  return (
+    <select
+      value={status}
+      onChange={handleChange}
+      className={`px-2 py-1 rounded-lg text-xs font-medium capitalize border cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 ${statusStyles[status] || statusStyles.pending}`}
+    >
+      {ORDER_STATUSES.map((s) => (
+        <option key={s} value={s} className="capitalize bg-white text-heading">
+          {s}
+        </option>
+      ))}
+    </select>
   );
 }
