@@ -81,8 +81,8 @@ export const products = [
 export const categories = [
   { id: "all", name: "All Meals" },
   { id: "health", name: "Healthy Meals" },
-  { id: "asian", name: "Asian Cuisine" },
-  { id: "indian", name: "Indian Flavors" },
+  { id: "sport", name: "Sport" },
+  { id: "emergency", name: "Emergency" },
   { id: "mediterranean", name: "Mediterranean" },
   { id: "italian", name: "Italian Classics" },
   { id: "mexican", name: "Mexican Favorites" },
