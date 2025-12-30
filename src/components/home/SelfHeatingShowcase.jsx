@@ -122,7 +122,7 @@ export default function SelfHeatingShowcase() {
 
         {/* Stats Grid */}
         <div
-          className={`grid grid-cols-3 gap-4 lg:gap-8 max-w-3xl mx-auto ${isRTL ? 'direction-rtl' : ''}`}
+          className={`grid grid-cols-3 gap-2 sm:gap-4 lg:gap-8 max-w-3xl mx-auto ${isRTL ? 'direction-rtl' : ''}`}
           style={{ animation: 'fadeInUp 0.8s ease-out 0.5s both' }}
         >
           {stats.map((stat, index) => (
@@ -130,19 +130,19 @@ export default function SelfHeatingShowcase() {
               key={index}
               className="relative group"
             >
-              <div className="relative bg-white border border-heading/10 rounded-2xl lg:rounded-3xl p-6 lg:p-8 text-center transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1">
+              <div className="relative bg-white border border-heading/10 rounded-xl sm:rounded-2xl lg:rounded-3xl p-3 sm:p-5 lg:p-8 text-center transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1">
                 {/* Value */}
-                <div className="flex items-baseline justify-center gap-1 mb-2">
-                  <span className="font-playfair text-4xl lg:text-5xl font-bold text-heading">
+                <div className="flex items-baseline justify-center gap-0.5 sm:gap-1 mb-1 sm:mb-2">
+                  <span className="font-playfair text-2xl sm:text-3xl lg:text-5xl font-bold text-heading">
                     {stat.value}
                   </span>
-                  <span className="text-primary text-xl lg:text-2xl font-semibold">
+                  <span className="text-primary text-sm sm:text-lg lg:text-2xl font-semibold">
                     {stat.unit}
                   </span>
                 </div>
 
                 {/* Label */}
-                <p className="text-heading-light text-sm lg:text-base font-medium">
+                <p className="text-heading-light text-xs sm:text-sm lg:text-base font-medium leading-tight">
                   {stat.label}
                 </p>
               </div>
