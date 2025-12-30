@@ -12,8 +12,9 @@ import { dashboardData as mockData } from '../../data/dashboardMockData';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1';
 
-// LocalStorage key for order status persistence
+// LocalStorage keys for persistence
 const ORDER_STATUS_KEY = 'reachfood_order_statuses';
+const REVENUE_ADJUSTMENT_KEY = 'reachfood_revenue_adjustment';
 
 // Load saved order statuses from localStorage
 const loadSavedStatuses = () => {
@@ -22,6 +23,25 @@ const loadSavedStatuses = () => {
     return saved ? JSON.parse(saved) : {};
   } catch {
     return {};
+  }
+};
+
+// Load saved revenue adjustment from localStorage
+const loadRevenueAdjustment = () => {
+  try {
+    const saved = localStorage.getItem(REVENUE_ADJUSTMENT_KEY);
+    return saved ? JSON.parse(saved) : 0;
+  } catch {
+    return 0;
+  }
+};
+
+// Save revenue adjustment to localStorage
+const saveRevenueAdjustment = (adjustment) => {
+  try {
+    localStorage.setItem(REVENUE_ADJUSTMENT_KEY, JSON.stringify(adjustment));
+  } catch (e) {
+    console.warn('Failed to save revenue adjustment:', e);
   }
 };
 
@@ -41,6 +61,7 @@ export default function Dashboard() {
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
   const [orderStatuses, setOrderStatuses] = useState(loadSavedStatuses);
+  const [revenueAdjustment, setRevenueAdjustment] = useState(loadRevenueAdjustment);
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -93,8 +114,35 @@ export default function Dashboard() {
     fetchData();
   }, [dateRange]);
 
-  // Handle order status change
+  // Handle order status change with revenue sync
   const handleStatusChange = async (orderId, newStatus) => {
+    // Find the order to get its amount
+    const currentData = data || mockData;
+    const order = (currentData.recentOrders || []).find(o => o.id === orderId);
+    const orderAmount = order ? Number(order.amount) : 0;
+
+    // Get the current status (from saved statuses or original order status)
+    const currentStatus = orderStatuses[orderId] || (order ? order.status : null);
+
+    // Calculate revenue adjustment based on status transition
+    let adjustment = 0;
+
+    // If changing TO completed from any non-completed status, add revenue
+    if (newStatus === 'completed' && currentStatus !== 'completed') {
+      adjustment = orderAmount;
+    }
+    // If changing FROM completed to any other status (especially cancelled), remove revenue
+    else if (currentStatus === 'completed' && newStatus !== 'completed') {
+      adjustment = -orderAmount;
+    }
+
+    // Update revenue adjustment
+    if (adjustment !== 0) {
+      const newRevenueAdjustment = revenueAdjustment + adjustment;
+      setRevenueAdjustment(newRevenueAdjustment);
+      saveRevenueAdjustment(newRevenueAdjustment);
+    }
+
     // Update local state
     const updatedStatuses = { ...orderStatuses, [orderId]: newStatus };
     setOrderStatuses(updatedStatuses);
@@ -143,6 +191,16 @@ export default function Dashboard() {
     completed: recentOrders.filter(o => o.status === 'completed').length,
     cancelled: recentOrders.filter(o => o.status === 'cancelled').length,
   };
+
+  // Calculate dynamic metrics based on order statuses
+  const adjustedRevenue = (metrics.revenue.value || 0) + revenueAdjustment;
+  const totalOrders = recentOrders.length;
+  const completedOrders = orderStats.completed;
+  // Conversion rate = (completed orders / total users) * 100
+  const baseConversionRate = metrics.conversionRate.value || 0;
+  const adjustedConversionRate = totalOrders > 0
+    ? ((completedOrders / metrics.totalUsers.value) * 100).toFixed(1)
+    : baseConversionRate;
 
   // Table column configurations
   const orderColumns = [
@@ -277,22 +335,22 @@ export default function Dashboard() {
           />
           <MetricCard
             label={metrics.completedOrders.label}
-            value={metrics.completedOrders.value}
+            value={completedOrders}
             change={metrics.completedOrders.change}
             trend={metrics.completedOrders.trend}
             period={metrics.completedOrders.period}
           />
           <MetricCard
             label={metrics.revenue.label}
-            value={metrics.revenue.value}
+            value={adjustedRevenue}
             change={metrics.revenue.change}
-            trend={metrics.revenue.trend}
+            trend={revenueAdjustment >= 0 ? 'up' : 'down'}
             period={metrics.revenue.period}
             prefix={metrics.revenue.prefix}
           />
           <MetricCard
             label={metrics.conversionRate.label}
-            value={metrics.conversionRate.value}
+            value={parseFloat(adjustedConversionRate)}
             change={metrics.conversionRate.change}
             trend={metrics.conversionRate.trend}
             period={metrics.conversionRate.period}
