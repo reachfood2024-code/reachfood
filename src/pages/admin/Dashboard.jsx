@@ -41,6 +41,8 @@ export default function Dashboard() {
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
   const [orderStatuses, setOrderStatuses] = useState(loadSavedStatuses);
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Fetch data from API
   useEffect(() => {
@@ -120,11 +122,36 @@ export default function Dashboard() {
     status: orderStatuses[order.id] || order.status
   }));
 
+  // Filter orders based on status and search
+  const filteredOrders = recentOrders.filter(order => {
+    const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
+    const matchesSearch = searchQuery === '' ||
+      order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.phone.includes(searchQuery) ||
+      order.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.country.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesStatus && matchesSearch;
+  });
+
+  // Order statistics
+  const orderStats = {
+    total: recentOrders.length,
+    pending: recentOrders.filter(o => o.status === 'pending').length,
+    processing: recentOrders.filter(o => o.status === 'processing').length,
+    shipped: recentOrders.filter(o => o.status === 'shipped').length,
+    completed: recentOrders.filter(o => o.status === 'completed').length,
+    cancelled: recentOrders.filter(o => o.status === 'cancelled').length,
+  };
+
   // Table column configurations
   const orderColumns = [
     { key: 'id', label: 'Order ID' },
     { key: 'customer', label: 'Customer' },
     { key: 'product', label: 'Product' },
+    { key: 'phone', label: 'Phone' },
+    { key: 'location', label: 'Location' },
+    { key: 'country', label: 'Country' },
     {
       key: 'amount',
       label: 'Amount',
@@ -310,13 +337,133 @@ export default function Dashboard() {
           />
         </div>
 
-        {/* Tables Section */}
+        {/* Order Management Section */}
+        <div className="mb-8">
+          <div className="bg-white rounded-2xl p-6 shadow-sm">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+              <div>
+                <h3 className="font-playfair text-xl font-semibold text-heading">Order Management</h3>
+                <p className="text-sm text-heading-light mt-1">Track and manage all customer orders</p>
+              </div>
+
+              {/* Order Stats */}
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => setStatusFilter('all')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${statusFilter === 'all' ? 'bg-heading text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                >
+                  All ({orderStats.total})
+                </button>
+                <button
+                  onClick={() => setStatusFilter('pending')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${statusFilter === 'pending' ? 'bg-gray-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                >
+                  Pending ({orderStats.pending})
+                </button>
+                <button
+                  onClick={() => setStatusFilter('processing')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${statusFilter === 'processing' ? 'bg-yellow-500 text-white' : 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'}`}
+                >
+                  Processing ({orderStats.processing})
+                </button>
+                <button
+                  onClick={() => setStatusFilter('shipped')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${statusFilter === 'shipped' ? 'bg-blue-500 text-white' : 'bg-blue-100 text-blue-700 hover:bg-blue-200'}`}
+                >
+                  Shipped ({orderStats.shipped})
+                </button>
+                <button
+                  onClick={() => setStatusFilter('completed')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${statusFilter === 'completed' ? 'bg-green-500 text-white' : 'bg-green-100 text-green-700 hover:bg-green-200'}`}
+                >
+                  Completed ({orderStats.completed})
+                </button>
+                <button
+                  onClick={() => setStatusFilter('cancelled')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${statusFilter === 'cancelled' ? 'bg-red-500 text-white' : 'bg-red-100 text-red-700 hover:bg-red-200'}`}
+                >
+                  Cancelled ({orderStats.cancelled})
+                </button>
+              </div>
+            </div>
+
+            {/* Search Bar */}
+            <div className="mb-4">
+              <input
+                type="text"
+                placeholder="Search by Order ID, Customer, Phone, Location, or Country..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full px-4 py-2.5 bg-cream rounded-lg text-sm text-heading border-none focus:ring-2 focus:ring-primary/30 placeholder:text-heading-light"
+              />
+            </div>
+
+            {/* Orders Table */}
+            <div className="overflow-x-auto -mx-6 px-6">
+              <table className="w-full min-w-[900px]">
+                <thead>
+                  <tr className="border-b border-heading/10">
+                    {orderColumns.map((col, i) => (
+                      <th
+                        key={i}
+                        className={`text-left text-xs font-semibold text-heading-light uppercase tracking-wider py-3 px-2 first:pl-0 last:pr-0 ${col.align === 'right' ? 'text-right' : ''}`}
+                      >
+                        {col.label}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredOrders.length === 0 ? (
+                    <tr>
+                      <td colSpan={orderColumns.length} className="py-8 text-center text-heading-light">
+                        No orders found matching your criteria
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredOrders.map((order, rowIndex) => (
+                      <tr
+                        key={rowIndex}
+                        className="border-b border-heading/5 hover:bg-cream/50 transition-colors"
+                      >
+                        {orderColumns.map((col, colIndex) => {
+                          const value = order[col.key];
+                          const displayValue = col.render ? col.render(value, order) : value;
+                          return (
+                            <td
+                              key={colIndex}
+                              className={`py-3 px-2 text-sm text-heading first:pl-0 last:pr-0 whitespace-nowrap ${col.align === 'right' ? 'text-right' : ''}`}
+                            >
+                              {displayValue}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Results count */}
+            <div className="mt-4 pt-3 border-t border-heading/10 flex justify-between items-center">
+              <p className="text-xs text-heading-light">
+                Showing {filteredOrders.length} of {recentOrders.length} orders
+              </p>
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="text-xs text-primary hover:text-primary-hover"
+                >
+                  Clear search
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Traffic Sources */}
         <div className="grid lg:grid-cols-2 gap-6">
-          <DataTable
-            title="Recent Orders"
-            columns={orderColumns}
-            data={recentOrders}
-          />
           <DataTable
             title="Traffic Sources"
             columns={trafficColumns}

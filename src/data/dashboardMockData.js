@@ -155,14 +155,26 @@ export const dashboardData = {
   ],
 
   recentOrders: [
-    { id: 'ORD-001234', customer: 'Ahmed Al-Rashid', product: 'Re-Protein', amount: 96.00, status: 'completed', date: '2024-12-25' },
-    { id: 'ORD-001233', customer: 'Sarah Johnson', product: 'Re-Energy', amount: 64.00, status: 'processing', date: '2024-12-25' },
-    { id: 'ORD-001232', customer: 'Mohammed Hassan', product: 'Re-Vitality', amount: 128.00, status: 'completed', date: '2024-12-24' },
-    { id: 'ORD-001231', customer: 'Emily Chen', product: 'Re-Balance', amount: 80.00, status: 'completed', date: '2024-12-24' },
-    { id: 'ORD-001230', customer: 'Omar Khaled', product: 'Re-Protein', amount: 192.00, status: 'completed', date: '2024-12-24' },
-    { id: 'ORD-001229', customer: 'Lisa Anderson', product: 'Re-Energy', amount: 32.00, status: 'shipped', date: '2024-12-23' },
-    { id: 'ORD-001228', customer: 'Yusuf Ibrahim', product: 'Re-Protein', amount: 64.00, status: 'completed', date: '2024-12-23' },
-    { id: 'ORD-001227', customer: 'Maria Garcia', product: 'Re-Vitality', amount: 96.00, status: 'completed', date: '2024-12-23' }
+    { id: 'ORD-001234', customer: 'Ahmed Al-Rashid', product: 'Re-Protein', amount: 96.00, phone: '+971 50 123 4567', location: 'Dubai Marina, Tower 5', country: 'UAE', status: 'completed', date: '2024-12-25' },
+    { id: 'ORD-001233', customer: 'Sarah Johnson', product: 'Re-Energy', amount: 64.00, phone: '+971 55 987 6543', location: 'Abu Dhabi, Corniche Road', country: 'UAE', status: 'processing', date: '2024-12-25' },
+    { id: 'ORD-001232', customer: 'Mohammed Hassan', product: 'Re-Vitality', amount: 128.00, phone: '+966 55 111 2222', location: 'Riyadh, Al Olaya District', country: 'Saudi Arabia', status: 'completed', date: '2024-12-24' },
+    { id: 'ORD-001231', customer: 'Emily Chen', product: 'Re-Balance', amount: 80.00, phone: '+971 52 333 4444', location: 'Sharjah, Al Nahda', country: 'UAE', status: 'completed', date: '2024-12-24' },
+    { id: 'ORD-001230', customer: 'Omar Khaled', product: 'Re-Protein', amount: 192.00, phone: '+965 99 555 6666', location: 'Kuwait City, Salmiya', country: 'Kuwait', status: 'completed', date: '2024-12-24' },
+    { id: 'ORD-001229', customer: 'Lisa Anderson', product: 'Re-Energy', amount: 32.00, phone: '+971 56 777 8888', location: 'Dubai, JBR Walk', country: 'UAE', status: 'shipped', date: '2024-12-23' },
+    { id: 'ORD-001228', customer: 'Yusuf Ibrahim', product: 'Re-Protein', amount: 64.00, phone: '+973 33 999 0000', location: 'Manama, Seef District', country: 'Bahrain', status: 'completed', date: '2024-12-23' },
+    { id: 'ORD-001227', customer: 'Maria Garcia', product: 'Re-Vitality', amount: 96.00, phone: '+971 54 222 3333', location: 'Dubai, Downtown', country: 'UAE', status: 'completed', date: '2024-12-23' },
+    { id: 'ORD-001226', customer: 'Fatima Al-Ali', product: 'Re-Balance', amount: 160.00, phone: '+968 92 444 5555', location: 'Muscat, Al Qurum', country: 'Oman', status: 'pending', date: '2024-12-22' },
+    { id: 'ORD-001225', customer: 'James Wilson', product: 'Re-Protein', amount: 128.00, phone: '+971 50 666 7777', location: 'Abu Dhabi, Yas Island', country: 'UAE', status: 'shipped', date: '2024-12-22' },
+    { id: 'ORD-001224', customer: 'Layla Hassan', product: 'Re-Energy', amount: 64.00, phone: '+966 50 888 9999', location: 'Jeddah, Al Hamra', country: 'Saudi Arabia', status: 'processing', date: '2024-12-22' },
+    { id: 'ORD-001223', customer: 'Ali Mohammed', product: 'Re-Vitality', amount: 96.00, phone: '+971 58 111 0000', location: 'Dubai, Business Bay', country: 'UAE', status: 'completed', date: '2024-12-21' },
+    { id: 'ORD-001222', customer: 'Sophie Brown', product: 'Re-Balance', amount: 80.00, phone: '+974 55 222 1111', location: 'Doha, West Bay', country: 'Qatar', status: 'completed', date: '2024-12-21' },
+    { id: 'ORD-001221', customer: 'Khalid Al-Saud', product: 'Re-Protein', amount: 256.00, phone: '+966 54 333 2222', location: 'Riyadh, King Abdullah District', country: 'Saudi Arabia', status: 'shipped', date: '2024-12-21' },
+    { id: 'ORD-001220', customer: 'Emma Taylor', product: 'Re-Energy', amount: 32.00, phone: '+971 52 444 3333', location: 'Dubai, Palm Jumeirah', country: 'UAE', status: 'cancelled', date: '2024-12-20' },
+    { id: 'ORD-001219', customer: 'Hassan Ali', product: 'Re-Vitality', amount: 128.00, phone: '+965 66 555 4444', location: 'Kuwait City, Hawally', country: 'Kuwait', status: 'completed', date: '2024-12-20' },
+    { id: 'ORD-001218', customer: 'Noor Ahmed', product: 'Re-Balance', amount: 160.00, phone: '+971 55 666 5555', location: 'Sharjah, Al Majaz', country: 'UAE', status: 'pending', date: '2024-12-20' },
+    { id: 'ORD-001217', customer: 'David Miller', product: 'Re-Protein', amount: 64.00, phone: '+973 39 777 6666', location: 'Manama, Juffair', country: 'Bahrain', status: 'completed', date: '2024-12-19' },
+    { id: 'ORD-001216', customer: 'Amira Saleh', product: 'Re-Energy', amount: 96.00, phone: '+968 99 888 7777', location: 'Muscat, Ruwi', country: 'Oman', status: 'processing', date: '2024-12-19' },
+    { id: 'ORD-001215', customer: 'John Smith', product: 'Re-Vitality', amount: 128.00, phone: '+971 50 999 8888', location: 'Dubai, DIFC', country: 'UAE', status: 'completed', date: '2024-12-19' }
   ],
 
   recentSubscribers: [
