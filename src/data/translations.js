@@ -317,6 +317,7 @@ export const translations = {
     // Categories
     categories: {
       allMeals: 'All Meals',
+      healthyMeals: 'Healthy Meals',
       asianCuisine: 'Asian Cuisine',
       indianFlavors: 'Indian Flavors',
       mediterranean: 'Mediterranean',
@@ -761,6 +762,7 @@ export const translations = {
     // Categories
     categories: {
       allMeals: 'جميع الوجبات',
+      healthyMeals: 'الوجبات الصحية',
       asianCuisine: 'المطبخ الآسيوي',
       indianFlavors: 'النكهات الهندية',
       mediterranean: 'البحر المتوسط',
@@ -891,15 +893,225 @@ export const translations = {
 // Arabic product names and descriptions
 export const productTranslations = {
   en: {
-    1: { name: "Re-Protein", description: "High-quality protein blend for optimal nutrition" },
-    2: { name: "Re-Protein", description: "High-quality protein blend for optimal nutrition" },
-    3: { name: "Re-Protein", description: "High-quality protein blend for optimal nutrition" },
-    4: { name: "Re-Protein", description: "High-quality protein blend for optimal nutrition" },
+    1: {
+      name: "Grilled Chicken with Vegetables",
+      description: "Ready to Eat & Long shelf life. Grilled chicken with nutritious vegetables, served with lentil soup, rice, protein energy bar, tea/coffee/juice, and a small plantable seed.",
+      nutritionHighlights: ["Ready to Eat", "Long shelf life", "Balanced nutrition"],
+      mealComponents: ["Lentil or Vegetable Soup", "Rice", "Protein-Fortified Energy Bar", "Tea / Coffee / Fresh Juice", "Small Plant (plantable after meal, water-retaining for 2 weeks)"],
+      nutritionFacts: {
+        servingSize: "1 plate (~375g)",
+        calories: "~400 kcal",
+        protein: "~35g",
+        carbs: "~40g",
+        fat: "~12g",
+        fiber: "~5g"
+      }
+    },
+    3: {
+      name: "White Beans with Meat and Tomatoes",
+      description: "White beans with meat and tomatoes - a healthy dish rich in protein from meat, beans, and fresh vegetables.",
+      nutritionHighlights: ["High in protein from meat to support muscles", "High in lentils and beans for digestive health", "Natural organic recipe with antioxidants", "Balanced in carbohydrates and fats"],
+      mealComponents: ["Lentil or Vegetable Soup", "Rice", "Protein-Fortified Energy Bar", "Tea / Coffee / Fresh Juice", "Small Plant (plantable after meal, water-retaining for 2 weeks)"],
+      nutritionFacts: {
+        servingSize: "1 plate (~375g)",
+        calories: "360 kcal",
+        protein: "32g",
+        carbs: "30g",
+        fat: "12g",
+        fiber: "8g",
+        sodium: "400mg",
+        vitaminA: "15% DV",
+        vitaminC: "20% DV",
+        iron: "25% DV"
+      }
+    },
+    4: {
+      name: "Kofta with Rice & Sauce",
+      description: "Delicious seasoned kofta cooked in rich tomato sauce with vegetables and natural spices. Perfectly balanced for high protein and essential nutrients.",
+      nutritionHighlights: ["High in protein from meat to support muscles", "Natural vegetables and spices provide antioxidants", "Can reduce oil for lower fat and healthier option"],
+      mealComponents: ["Lentil or Vegetable Soup", "Rice", "Protein-Fortified Energy Bar", "Tea / Coffee / Fresh Juice", "Small Plant (plantable after meal, water-retaining for 2 weeks)"],
+      nutritionFacts: {
+        servingSize: "1 plate (~275g)",
+        calories: "420 kcal",
+        protein: "38g (~36% of calories)",
+        carbs: "15g",
+        fat: "22g",
+        fiber: "3g",
+        cholesterol: "90mg",
+        vitaminC: "10% DV",
+        iron: "25% DV"
+      }
+    },
+    5: {
+      name: "Pasta with Meatballs",
+      description: "Al dente pasta tossed with tender, protein-rich meatballs and a fresh tomato-based sauce. A balanced, hearty, and satisfying meal.",
+      nutritionHighlights: ["High-protein meatballs support muscles", "Natural tomato sauce adds vitamins and minerals", "Pasta provides sustained energy"],
+      mealComponents: ["Lentil or Vegetable Soup", "Rice", "Protein-Fortified Energy Bar", "Tea / Coffee / Fresh Juice", "Small Plant (plantable after meal, water-retaining for 2 weeks)"],
+      nutritionFacts: {
+        servingSize: "1 plate (~375g)",
+        calories: "450 kcal",
+        protein: "30g",
+        carbs: "45g",
+        fat: "18g",
+        fiber: "5g",
+        sodium: "600mg"
+      }
+    },
+    7: {
+      name: "Stuffed Zucchini & Grape Leaves with Lamb Ribs",
+      description: "Rich and delicious dish of zucchini and grape leaves stuffed with minced meat, Egyptian rice, and herbs, with lamb ribs. High in protein, fiber, and essential vitamins.",
+      nutritionHighlights: ["Zucchini & Grape Leaves: Low-calorie, high fiber, rich in Vitamins A & C", "Egyptian Rice", "Ground Meat: High in protein, contains iron & B vitamins", "Herbs & Spices: Flavor & micronutrients"],
+      mealComponents: ["Lentil or Vegetable Soup", "Rice", "Protein-Fortified Energy Bar", "Tea / Coffee / Fresh Juice", "Small Plant (plantable after meal, water-retaining for 2 weeks)"],
+      nutritionFacts: {
+        servingSize: "1 plate (~350g)",
+        calories: "480 kcal",
+        protein: "28g (~23% of calories)",
+        carbs: "38g",
+        fat: "22g",
+        fiber: "6g",
+        vitaminA: "25% DV",
+        iron: "20% DV",
+        calcium: "8% DV"
+      }
+    },
+    8: {
+      name: "Zero-Oil Grilled Chicken & Rice",
+      description: "Ready to Eat & Long shelf life. Healthy zero-oil grilled chicken with nutritious brown rice.",
+      nutritionHighlights: ["Zero oil cooking", "Ready to Eat", "Long shelf life"],
+      mealComponents: ["Lentil or Vegetable Soup", "Rice", "Protein-Fortified Energy Bar", "Tea / Coffee / Fresh Juice", "Small Plant (plantable after meal)"],
+      nutritionFacts: {
+        servingSize: "1 plate (~350g)",
+        calories: "~380 kcal",
+        protein: "~40g",
+        carbs: "~35g",
+        fat: "~5g",
+        fiber: "~4g"
+      }
+    },
+    9: {
+      name: "Zero-Oil Grilled Vegetables, Chicken & Rice",
+      description: "Ready to Eat & Long shelf life. Healthy zero-oil grilled chicken and vegetables with rice.",
+      nutritionHighlights: ["Zero oil cooking", "Ready to Eat", "Long shelf life"],
+      mealComponents: ["Lentil or Vegetable Soup", "Rice", "Protein-Fortified Energy Bar", "Tea / Coffee / Fresh Juice", "Small Plant (plantable after meal)"],
+      nutritionFacts: {
+        servingSize: "1 plate (~375g)",
+        calories: "~350 kcal",
+        protein: "~38g",
+        carbs: "~30g",
+        fat: "~5g",
+        fiber: "~6g"
+      }
+    },
   },
   ar: {
-    1: { name: "ري-بروتين", description: "مزيج بروتين عالي الجودة للتغذية المثلى" },
-    2: { name: "ري-بروتين", description: "مزيج بروتين عالي الجودة للتغذية المثلى" },
-    3: { name: "ري-بروتين", description: "مزيج بروتين عالي الجودة للتغذية المثلى" },
-    4: { name: "ري-بروتين", description: "مزيج بروتين عالي الجودة للتغذية المثلى" },
+    1: {
+      name: "دجاج مشوي مع الخضار",
+      description: "جاهز للأكل وطويل مدة الصلاحية. دجاج مشوي مع خضار مغذية، يُقدم مع شوربة العدس، أرز، لوح طاقة بروتين، شاي/قهوة/عصير، ونبتة صغيرة للزراعة.",
+      nutritionHighlights: ["جاهز للأكل", "طويل مدة الصلاحية", "تغذية متوازنة"],
+      mealComponents: ["شوربة العدس والخضار", "الأرز", "لوح طاقة مدعم بالبروتين", "شاي / قهوة / عصير طبيعي", "نبتة صغيرة (للزراعة بعد الوجبة، تحافظ المياه لمدة أسبوعين)"],
+      nutritionFacts: {
+        servingSize: "طبق واحد (~375 غرام)",
+        calories: "~400 سعرة",
+        protein: "~35 غرام",
+        carbs: "~40 غرام",
+        fat: "~12 غرام",
+        fiber: "~5 غرام"
+      }
+    },
+    3: {
+      name: "الفاصوليا البيضاء باللحم والطماطم والأرز",
+      description: "الفاصوليا البيضاء مع اللحم والطماطم - طبق صحي غني بالبروتين من اللحم والفاصوليا والخضار الطازجة.",
+      nutritionHighlights: ["غني بالبروتين من اللحم لدعم العضلات", "غني بالعدس والفاصوليا لصحة الجهاز الهضمي", "وصفة طبيعية عضوية غنية بمضادات الأكسدة", "متوازن في الكربوهيدرات والدهون"],
+      mealComponents: ["شوربة العدس والخضار", "الأرز", "لوح طاقة مدعم بالبروتين", "شاي / قهوة / عصير طبيعي", "نبتة صغيرة (للزراعة بعد الوجبة، تحافظ المياه لمدة أسبوعين)"],
+      nutritionFacts: {
+        servingSize: "طبق واحد (~375 غرام)",
+        calories: "360 سعرة",
+        protein: "32 غرام",
+        carbs: "30 غرام",
+        fat: "12 غرام",
+        fiber: "8 غرام",
+        sodium: "400 ملغم",
+        vitaminA: "15% DV",
+        vitaminC: "20% DV",
+        iron: "25% DV"
+      }
+    },
+    4: {
+      name: "كفتة مع الرز والصوص",
+      description: "كفتة شهية متبلة مطهوة في صلصة غنية بالطماطم مع خضار وتوابل طبيعية. متوازنة بشكل مثالي لتوفير بروتين عالي ومغذيات أساسية.",
+      nutritionHighlights: ["غني بالبروتين من اللحم لدعم العضلات", "خضار وتوابل طبيعية توفر مضادات الأكسدة", "يمكن تقليل الزيت لجعله أقل دهوناً وأكثر صحة"],
+      mealComponents: ["شوربة العدس والخضار", "الأرز", "لوح طاقة مدعم بالبروتين", "شاي / قهوة / عصير طبيعي", "نبتة صغيرة (للزراعة بعد الوجبة، تحافظ المياه لمدة أسبوعين)"],
+      nutritionFacts: {
+        servingSize: "طبق واحد (~275 غرام)",
+        calories: "420 سعرة",
+        protein: "38 غرام (~36% من السعرات)",
+        carbs: "15 غرام",
+        fat: "22 غرام",
+        fiber: "3 غرام",
+        cholesterol: "90 ملغم",
+        vitaminC: "10% DV",
+        iron: "25% DV"
+      }
+    },
+    5: {
+      name: "معكرونة مع كرات اللحم",
+      description: "معكرونة مطهوة بطريقة الدنتي مع كرات لحم طرية وغنية بالبروتين وصلصة طماطم طبيعية. وجبة متوازنة وشهية ومشبعة ولذيذة.",
+      nutritionHighlights: ["كرات اللحم الغنية بالبروتين تدعم العضلات", "صلصة الطماطم الطبيعية تضيف فيتامينات ومعادن", "المعكرونة توفر طاقة مستدامة"],
+      mealComponents: ["شوربة العدس والخضار", "الأرز", "لوح طاقة مدعم بالبروتين", "شاي / قهوة / عصير طبيعي", "نبتة صغيرة (للزراعة بعد الوجبة، تحافظ المياه لمدة أسبوعين)"],
+      nutritionFacts: {
+        servingSize: "طبق واحد (~375 غرام)",
+        calories: "450 سعرة",
+        protein: "30 غرام",
+        carbs: "45 غرام",
+        fat: "18 غرام",
+        fiber: "5 غرام",
+        sodium: "600 ملغم"
+      }
+    },
+    7: {
+      name: "كوسا وورق عنب محشي مع أضلاع الضأن",
+      description: "طبق غني ولذيذ من كوسا وورق عنب محشي باللحم المفروم والأرز المصري والنعناع، مع أضلاع لحم الضأن الشهية. غني بالبروتين والألياف والفيتامينات الأساسية.",
+      nutritionHighlights: ["كوسا وورق العنب: منخفض السعرات، عالي الألياف، غني بفيتامينات A و C", "أرز مصري", "لحم مفروم: غني بالبروتين يحتوي على الحديد وفيتامينات B", "أعشاب وتوابل: نكهة ومغذيات دقيقة"],
+      mealComponents: ["شوربة العدس والخضار", "الأرز", "لوح طاقة مدعم بالبروتين", "شاي / قهوة / عصير طبيعي", "نبتة صغيرة (للزراعة بعد الوجبة، تحافظ المياه لمدة أسبوعين)"],
+      nutritionFacts: {
+        servingSize: "طبق واحد (~350 غرام)",
+        calories: "480 سعرة",
+        protein: "28 غرام (~23% من السعرات)",
+        carbs: "38 غرام",
+        fat: "22 غرام",
+        fiber: "6 غرام",
+        vitaminA: "25% DV",
+        iron: "20% DV",
+        calcium: "8% DV"
+      }
+    },
+    8: {
+      name: "دجاج صحي مشوي بدون زيت مع أرز",
+      description: "جاهز للأكل وطويل مدة الصلاحية. دجاج صحي مشوي بدون زيت مع أرز بني مغذي.",
+      nutritionHighlights: ["طهي بدون زيت", "جاهز للأكل", "طويل مدة الصلاحية"],
+      mealComponents: ["شوربة العدس والخضار", "الأرز", "لوح طاقة مدعم بالبروتين", "شاي / قهوة / عصير طبيعي", "نبتة صغيرة للزراعة"],
+      nutritionFacts: {
+        servingSize: "طبق واحد (~350 غرام)",
+        calories: "~380 سعرة",
+        protein: "~40 غرام",
+        carbs: "~35 غرام",
+        fat: "~5 غرام",
+        fiber: "~4 غرام"
+      }
+    },
+    9: {
+      name: "دجاج وخضار مشوي بدون زيت مع أرز",
+      description: "جاهز للأكل وطويل مدة الصلاحية. صحية ومقيدة - دجاج مشوي وخضار بدون زيت مع أرز.",
+      nutritionHighlights: ["طهي بدون زيت", "جاهز للأكل", "طويل مدة الصلاحية"],
+      mealComponents: ["شوربة العدس والخضار", "الأرز", "لوح طاقة مدعم بالبروتين", "شاي / قهوة / عصير طبيعي", "نبتة صغيرة للزراعة"],
+      nutritionFacts: {
+        servingSize: "طبق واحد (~375 غرام)",
+        calories: "~350 سعرة",
+        protein: "~38 غرام",
+        carbs: "~30 غرام",
+        fat: "~5 غرام",
+        fiber: "~6 غرام"
+      }
+    },
   },
 };

@@ -245,67 +245,87 @@ export default function Checkout() {
                 <div className="space-y-4">
                   {cartItems.map((item) => {
                     const productName = productTranslations[language]?.[item.id]?.name || item.name;
+                    const mealComponents = productTranslations[language]?.[item.id]?.mealComponents || [];
 
                     return (
                       <div
                         key={item.id}
-                        className={`flex gap-4 p-4 rounded-2xl bg-cream hover:bg-cream-dark transition-colors ${
-                          isRTL ? 'flex-row-reverse' : ''
-                        }`}
+                        className={`p-4 rounded-2xl bg-cream hover:bg-cream-dark transition-colors`}
                       >
-                        {/* Product Image */}
-                        <div className="flex-shrink-0">
-                          <img
-                            src={item.image}
-                            alt={productName}
-                            className="w-24 h-24 object-cover rounded-xl"
-                          />
-                        </div>
-
-                        {/* Product Details */}
-                        <div className={`flex-1 ${isRTL ? 'text-right' : ''}`}>
-                          <h3 className="font-semibold text-heading text-lg mb-1">
-                            {productName}
-                          </h3>
-                          <p className="text-primary font-bold text-xl">
-                            {formatPrice(item.price)}
-                          </p>
-                        </div>
-
-                        {/* Quantity Controls */}
-                        <div className={`flex flex-col items-center justify-between ${isRTL ? 'items-start' : 'items-end'}`}>
-                          <button
-                            type="button"
-                            onClick={() => removeFromCart(item.id)}
-                            className="text-heading-light hover:text-red-500 transition-colors text-sm font-medium mb-2"
-                          >
-                            {t('checkout.remove')}
-                          </button>
-
-                          <div className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                            <button
-                              type="button"
-                              onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
-                              className="w-8 h-8 rounded-full bg-white hover:bg-gray-100 text-heading font-bold transition-colors flex items-center justify-center border border-gray-200"
-                            >
-                              −
-                            </button>
-                            <span className="text-lg font-bold text-heading w-8 text-center">
-                              {item.quantity}
-                            </span>
-                            <button
-                              type="button"
-                              onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                              className="w-8 h-8 rounded-full bg-white hover:bg-gray-100 text-heading font-bold transition-colors flex items-center justify-center border border-gray-200"
-                            >
-                              +
-                            </button>
+                        <div className={`flex gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                          {/* Product Image */}
+                          <div className="flex-shrink-0">
+                            <img
+                              src={item.image}
+                              alt={productName}
+                              className="w-24 h-24 object-cover rounded-xl"
+                            />
                           </div>
 
-                          <p className="text-heading-light text-sm mt-2">
-                            {t('cart.subtotal')}: <span className="font-semibold text-heading">{formatPrice(item.price * item.quantity)}</span>
-                          </p>
+                          {/* Product Details */}
+                          <div className={`flex-1 ${isRTL ? 'text-right' : ''}`}>
+                            <h3 className="font-semibold text-heading text-lg mb-1">
+                              {productName}
+                            </h3>
+                            <p className="text-primary font-bold text-xl">
+                              {formatPrice(item.price)}
+                            </p>
+                          </div>
+
+                          {/* Quantity Controls */}
+                          <div className={`flex flex-col items-center justify-between ${isRTL ? 'items-start' : 'items-end'}`}>
+                            <button
+                              type="button"
+                              onClick={() => removeFromCart(item.id)}
+                              className="text-heading-light hover:text-red-500 transition-colors text-sm font-medium mb-2"
+                            >
+                              {t('checkout.remove')}
+                            </button>
+
+                            <div className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                              <button
+                                type="button"
+                                onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                                className="w-8 h-8 rounded-full bg-white hover:bg-gray-100 text-heading font-bold transition-colors flex items-center justify-center border border-gray-200"
+                              >
+                                −
+                              </button>
+                              <span className="text-lg font-bold text-heading w-8 text-center">
+                                {item.quantity}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                                className="w-8 h-8 rounded-full bg-white hover:bg-gray-100 text-heading font-bold transition-colors flex items-center justify-center border border-gray-200"
+                              >
+                                +
+                              </button>
+                            </div>
+
+                            <p className="text-heading-light text-sm mt-2">
+                              {t('cart.subtotal')}: <span className="font-semibold text-heading">{formatPrice(item.price * item.quantity)}</span>
+                            </p>
+                          </div>
                         </div>
+
+                        {/* Meal Components */}
+                        {mealComponents.length > 0 && (
+                          <div className={`mt-4 pt-4 border-t border-gray-200 ${isRTL ? 'text-right' : ''}`}>
+                            <p className="text-sm font-semibold text-heading mb-2">
+                              {language === 'ar' ? 'مكونات الوجبة:' : 'Meal Components:'}
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                              {mealComponents.map((component, index) => (
+                                <span
+                                  key={index}
+                                  className="text-xs bg-white text-heading-light px-3 py-1 rounded-full border border-gray-200"
+                                >
+                                  {component}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     );
                   })}
