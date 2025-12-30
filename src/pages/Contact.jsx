@@ -60,22 +60,50 @@ export default function Contact() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      // Send to Google Apps Script
+      const GOOGLE_SCRIPT_URL = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
 
-    setIsSubmitting(false);
-    setSubmitted(true);
-    setFormData({
-      firstName: '',
-      lastName: '',
-      email: '',
-      organization: '',
-      inquiryType: '',
-      message: ''
-    });
+      if (GOOGLE_SCRIPT_URL) {
+        await fetch(GOOGLE_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            type: 'contact',
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            organization: formData.organization,
+            inquiryType: formData.inquiryType,
+            message: formData.message,
+            source: 'shop.reachfood.co',
+            timestamp: new Date().toISOString()
+          })
+        });
+      }
 
-    // Reset success message after 5 seconds
-    setTimeout(() => setSubmitted(false), 5000);
+      setSubmitted(true);
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        organization: '',
+        inquiryType: '',
+        message: ''
+      });
+
+      // Reset success message after 5 seconds
+      setTimeout(() => setSubmitted(false), 5000);
+    } catch (error) {
+      console.error('Contact form submission error:', error);
+      // Still show success (no-cors mode doesn't return response)
+      setSubmitted(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

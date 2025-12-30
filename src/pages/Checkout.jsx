@@ -160,7 +160,8 @@ export default function Checkout() {
         price: item.price
       })),
       total: cartTotal,
-      customer: formData
+      customer: formData,
+      source: 'shop.reachfood.co'
     };
 
     try {
