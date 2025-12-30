@@ -12,10 +12,12 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// CORS - Allow both www and non-www domains
+// CORS - Allow all ReachFood domains
 const allowedOrigins = [
   'https://reachfood.co',
   'https://www.reachfood.co',
+  'https://shop.reachfood.co',
+  'https://www.shop.reachfood.co',
   'http://localhost:5173',
   'http://localhost:3000'
 ];
