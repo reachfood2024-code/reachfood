@@ -13,17 +13,20 @@ import ProductCheckout from './pages/ProductCheckout'
 import Checkout from './pages/Checkout'
 import OrderConfirmation from './pages/OrderConfirmation'
 import Dashboard from './pages/admin/Dashboard'
+import AdminAuth from './components/admin/AdminAuth'
 
 function App() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
 
-  // Admin routes render without main layout
+  // Admin routes render without main layout, protected by AdminAuth
   if (isAdminRoute) {
     return (
-      <Routes>
-        <Route path="/admin" element={<Dashboard />} />
-      </Routes>
+      <AdminAuth>
+        <Routes>
+          <Route path="/admin" element={<Dashboard />} />
+        </Routes>
+      </AdminAuth>
     );
   }
 

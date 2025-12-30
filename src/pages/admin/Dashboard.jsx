@@ -6,12 +6,14 @@ import LineChart from '../../components/admin/LineChart';
 import AreaChart from '../../components/admin/AreaChart';
 import BarChart from '../../components/admin/BarChart';
 import DataTable, { StatusBadge } from '../../components/admin/DataTable';
+import { useAdminAuth } from '../../components/admin/AdminAuth';
 // Fallback mock data for when API is unavailable
 import { dashboardData as mockData } from '../../data/dashboardMockData';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1';
 
 export default function Dashboard() {
+  const { handleLogout } = useAdminAuth();
   const [dateRange, setDateRange] = useState('30');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -150,6 +152,12 @@ export default function Dashboard() {
               >
                 Back to Site
               </Link>
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors"
+              >
+                Logout
+              </button>
             </div>
           </div>
         </div>
