@@ -1,0 +1,205 @@
+{
+  "exportInfo": {
+    "exportedAt": "2025-12-31T09:07:13.424Z",
+    "exportedAtReadable": "Wednesday, December 31, 2025 at 09:07 AM",
+    "periodFrom": "2025-12-01",
+    "periodTo": "2025-12-31"
+  },
+  "userProfile": {
+    "name": "azeddine",
+    "email": "psy.zellag22@gmail.com",
+    "memberSince": "2025-11-29"
+  },
+  "summary": {
+    "totalChatSessions": 13,
+    "totalTextAnalyses": 0,
+    "totalInteractions": 13
+  },
+  "chatSessions": [
+    {
+      "id": "cmjtrtlyj00035svo17hnukx2",
+      "date": "2025-12-31",
+      "title": "hi",
+      "messageCount": 16,
+      "emotionalState": "Overwhelm, Sadness, intensity: high",
+      "biasesDetected": [],
+      "thinkingPatterns": [
+        "Analytical (30%)",
+        "Emotional (60%)",
+        "Pragmatic (10%)",
+        "Creative (0%)"
+      ],
+      "keyInsights": [
+        "It's important to honor your feelings of sadness, as they can be a signal of something deeper.",
+        "Taking a moment to explore what's behind your sadness might help you understand it better.",
+        "It’s common to feel a sense of disappointment when we don’t achieve our goals, which can weigh on our emotions.",
+        "This might be a moment to reflect on what those goals meant to you and what you learned from the experience.",
+        "Your motivation to help others is a powerful driving force, and it’s important to honor that.",
+        "Feeling sad about your goals not being met is completely valid, and it can be a signal to reassess your approach.",
+        "Your focus on improving your SaaS shows a proactive approach, which is a great way to channel your feelings into action.",
+        "It's clear that achieving these goals is tied to your desire to help others, which adds a meaningful layer to your aspirations.",
+        "The pressure of reaching your financial goals may be causing a sense of overwhelm, which can make it harder to see a clear path forward.",
+        "Breaking down your goals into smaller, manageable steps could help alleviate some of that overwhelm.",
+        "Your strong desire to help others is a powerful motivator, but it can also create pressure that feels overwhelming."
+      ]
+    },
+    {
+      "id": "cmjtr98600003eqr91n0zs9zu",
+      "date": "2025-12-31",
+      "title": "I'm trying to make a difficult decision and I'm fe...",
+      "messageCount": 2,
+      "emotionalState": "Confusion/Overwhelm, intensity: moderate",
+      "biasesDetected": [],
+      "thinkingPatterns": [
+        "Analytical (30%)",
+        "Emotional (50%)",
+        "Pragmatic (20%)",
+        "Creative (0%)"
+      ],
+      "keyInsights": [
+        "Feeling stuck often indicates that there are strong emotions or conflicting thoughts at play.",
+        "This moment of indecision can be an opportunity for clarity if we break it down together."
+      ]
+    },
+    {
+      "id": "cmjto36nb00013vu270svrbo7",
+      "date": "2025-12-31",
+      "title": "I'm trying to make a difficult decision and I'm fe...",
+      "messageCount": 4,
+      "emotionalState": "Confusion/Overwhelm, intensity: moderate",
+      "biasesDetected": [],
+      "thinkingPatterns": [
+        "Analytical (30%)",
+        "Emotional (50%)",
+        "Pragmatic (20%)",
+        "Creative (0%)"
+      ],
+      "keyInsights": [
+        "Feeling stuck often indicates that there might be a lot of conflicting thoughts or emotions at play.",
+        "Understanding the specifics of your decision could help clarify your feelings and lead to new insights.",
+        "It seems like you're experiencing a mix of analytical and emotional responses to this decision, which is common when faced with tough choices."
+      ]
+    },
+    {
+      "id": "cmjsyb17j0001x1deqsw7joke",
+      "date": "2025-12-30",
+      "title": "hi",
+      "messageCount": 2,
+      "emotionalState": ", intensity: low",
+      "biasesDetected": [],
+      "thinkingPatterns": [
+        "Analytical (0%)",
+        "Emotional (0%)",
+        "Pragmatic (0%)",
+        "Creative (0%)"
+      ],
+      "keyInsights": []
+    },
+    {
+      "id": "cmjk2tgn9000b501f9i8ryi9q",
+      "date": "2025-12-24",
+      "title": "hey",
+      "messageCount": 2,
+      "emotionalState": "null, null, intensity: low",
+      "biasesDetected": [],
+      "thinkingPatterns": [
+        "Analytical (0%)",
+        "Emotional (0%)",
+        "Pragmatic (0%)",
+        "Creative (0%)"
+      ],
+      "keyInsights": []
+    },
+    {
+      "id": "cmj0hsdox000t3h38dihj9m91",
+      "date": "2025-12-10",
+      "title": "امرحبا",
+      "messageCount": 2,
+      "emotionalState": "null, null, intensity: low",
+      "biasesDetected": [],
+      "thinkingPatterns": [
+        "Analytical (10%)",
+        "Emotional (10%)",
+        "Pragmatic (40%)",
+        "Creative (40%)"
+      ],
+      "keyInsights": []
+    },
+    {
+      "id": "cmj0hmrlt000j3h386fs5ly9h",
+      "date": "2025-12-10",
+      "title": "مرحبا",
+      "messageCount": 4,
+      "emotionalState": "null, null, intensity: low",
+      "biasesDetected": [],
+      "thinkingPatterns": [
+        "Analytical (0%)",
+        "Emotional (0%)",
+        "Pragmatic (0%)",
+        "Creative (0%)"
+      ],
+      "keyInsights": []
+    },
+    {
+      "id": "cmj0hkz74000h3h38wrqqrpr6",
+      "date": "2025-12-10",
+      "title": "New conversation",
+      "messageCount": 0,
+      "emotionalState": "",
+      "biasesDetected": [],
+      "thinkingPatterns": [],
+      "keyInsights": []
+    },
+    {
+      "id": "cmj0g8tv300093h382fvhwqp2",
+      "date": "2025-12-10",
+      "title": "New conversation",
+      "messageCount": 0,
+      "emotionalState": "",
+      "biasesDetected": [],
+      "thinkingPatterns": [],
+      "keyInsights": []
+    },
+    {
+      "id": "cmixph00l000123axgkiljvvd",
+      "date": "2025-12-08",
+      "title": "Flash Technique Session",
+      "messageCount": 7,
+      "emotionalState": "",
+      "biasesDetected": [],
+      "thinkingPatterns": [],
+      "keyInsights": []
+    },
+    {
+      "id": "cmixowqt70001b2f7w5xxvpjr",
+      "date": "2025-12-08",
+      "title": "Flash Technique Session",
+      "messageCount": 11,
+      "emotionalState": "",
+      "biasesDetected": [],
+      "thinkingPatterns": [],
+      "keyInsights": []
+    },
+    {
+      "id": "cmios5c4n000tq5l5km7q6lj6",
+      "date": "2025-12-02",
+      "title": "انا قلق",
+      "messageCount": 4,
+      "emotionalState": "",
+      "biasesDetected": [],
+      "thinkingPatterns": [],
+      "keyInsights": []
+    },
+    {
+      "id": "cmios48l0000jq5l5vau4v170",
+      "date": "2025-12-02",
+      "title": "مرحبا",
+      "messageCount": 4,
+      "emotionalState": "",
+      "biasesDetected": [],
+      "thinkingPatterns": [],
+      "keyInsights": []
+    }
+  ],
+  "textAnalyses": []
+}

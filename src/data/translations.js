@@ -172,7 +172,7 @@ export const translations = {
     orderConfirmation: {
       title: 'Order Confirmed!',
       thankYou: 'Thank you for your order',
-      receivedMessage: "We've received your order and will begin processing it shortly.",
+      receivedMessage: "We will contact you when the product is ready.",
       orderNumber: 'Order Number',
       orderDetails: 'Order Details',
       deliveryInfo: 'Delivery Information',
@@ -617,7 +617,7 @@ export const translations = {
     orderConfirmation: {
       title: 'تم تأكيد الطلب!',
       thankYou: 'شكراً لطلبك',
-      receivedMessage: 'لقد استلمنا طلبك وسنبدأ بمعالجته قريباً.',
+      receivedMessage: 'سنتواصل معك عندما يكون المنتج جاهزاً.',
       orderNumber: 'رقم الطلب',
       orderDetails: 'تفاصيل الطلب',
       deliveryInfo: 'معلومات التوصيل',

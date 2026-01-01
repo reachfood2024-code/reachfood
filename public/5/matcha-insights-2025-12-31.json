@@ -1,0 +1,227 @@
+{
+  "exportedAt": "2025-12-31T08:28:21.554Z",
+  "period": {
+    "from": "2025-12-01T08:28:21.541Z",
+    "to": "2025-12-31T08:28:21.541Z"
+  },
+  "summary": {
+    "totalConversations": 11,
+    "totalAnalyses": 0
+  },
+  "conversations": [
+    {
+      "id": "cmjto36nb00013vu270svrbo7",
+      "date": "2025-12-31T07:00:52.967Z",
+      "messageCount": 4,
+      "biases": [],
+      "patterns": [
+        {
+          "name": "Analytical",
+          "percentage": 30
+        },
+        {
+          "name": "Emotional",
+          "percentage": 50
+        },
+        {
+          "name": "Pragmatic",
+          "percentage": 20
+        },
+        {
+          "name": "Creative",
+          "percentage": 0
+        }
+      ],
+      "emotionalState": {
+        "primary": "Confusion/Overwhelm",
+        "evidence": "feeling stuck suggests you're grappling with uncertainty regarding the decision",
+        "intensity": "moderate",
+        "secondary": null
+      },
+      "insights": [
+        "Feeling stuck often indicates that there might be a lot of conflicting thoughts or emotions at play.",
+        "Understanding the specifics of your decision could help clarify your feelings and lead to new insights.",
+        "It seems like you're experiencing a mix of analytical and emotional responses to this decision, which is common when faced with tough choices."
+      ]
+    },
+    {
+      "id": "cmjsyb17j0001x1deqsw7joke",
+      "date": "2025-12-30T18:59:09.150Z",
+      "messageCount": 2,
+      "biases": [],
+      "patterns": [
+        {
+          "name": "Analytical",
+          "percentage": 0
+        },
+        {
+          "name": "Emotional",
+          "percentage": 0
+        },
+        {
+          "name": "Pragmatic",
+          "percentage": 0
+        },
+        {
+          "name": "Creative",
+          "percentage": 0
+        }
+      ],
+      "emotionalState": {
+        "primary": null,
+        "evidence": "Just a simple greeting without emotional content.",
+        "intensity": "low",
+        "secondary": null
+      },
+      "insights": []
+    },
+    {
+      "id": "cmjk2tgn9000b501f9i8ryi9q",
+      "date": "2025-12-24T13:55:31.846Z",
+      "messageCount": 2,
+      "biases": [],
+      "patterns": [
+        {
+          "name": "Analytical",
+          "percentage": 0
+        },
+        {
+          "name": "Emotional",
+          "percentage": 0
+        },
+        {
+          "name": "Pragmatic",
+          "percentage": 0
+        },
+        {
+          "name": "Creative",
+          "percentage": 0
+        }
+      ],
+      "emotionalState": {
+        "primary": "null",
+        "evidence": "No specific emotions expressed in the greeting.",
+        "intensity": "low",
+        "secondary": "null"
+      },
+      "insights": []
+    },
+    {
+      "id": "cmj0hsdox000t3h38dihj9m91",
+      "date": "2025-12-10T20:59:12.081Z",
+      "messageCount": 2,
+      "biases": [],
+      "patterns": [
+        {
+          "name": "Analytical",
+          "percentage": 10
+        },
+        {
+          "name": "Emotional",
+          "percentage": 10
+        },
+        {
+          "name": "Pragmatic",
+          "percentage": 40
+        },
+        {
+          "name": "Creative",
+          "percentage": 40
+        }
+      ],
+      "emotionalState": {
+        "primary": "null",
+        "evidence": "simple greeting, no emotional distress evident",
+        "intensity": "low",
+        "secondary": "null"
+      },
+      "insights": []
+    },
+    {
+      "id": "cmj0hmrlt000j3h386fs5ly9h",
+      "date": "2025-12-10T20:54:50.178Z",
+      "messageCount": 4,
+      "biases": [],
+      "patterns": [
+        {
+          "name": "Analytical",
+          "percentage": 0
+        },
+        {
+          "name": "Emotional",
+          "percentage": 0
+        },
+        {
+          "name": "Pragmatic",
+          "percentage": 0
+        },
+        {
+          "name": "Creative",
+          "percentage": 0
+        }
+      ],
+      "emotionalState": {
+        "primary": "null",
+        "evidence": "أنت تقول \"جيد\"، مما يعكس شعورًا إيجابيًا.",
+        "intensity": "low",
+        "secondary": "null"
+      },
+      "insights": []
+    },
+    {
+      "id": "cmj0hkz74000h3h38wrqqrpr6",
+      "date": "2025-12-10T20:53:26.704Z",
+      "messageCount": 0,
+      "biases": null,
+      "patterns": null,
+      "emotionalState": null,
+      "insights": null
+    },
+    {
+      "id": "cmj0g8tv300093h382fvhwqp2",
+      "date": "2025-12-10T20:16:00.304Z",
+      "messageCount": 0,
+      "biases": null,
+      "patterns": null,
+      "emotionalState": null,
+      "insights": null
+    },
+    {
+      "id": "cmixph00l000123axgkiljvvd",
+      "date": "2025-12-08T22:10:57.922Z",
+      "messageCount": 7,
+      "biases": null,
+      "patterns": null,
+      "emotionalState": null,
+      "insights": null
+    },
+    {
+      "id": "cmixowqt70001b2f7w5xxvpjr",
+      "date": "2025-12-08T21:55:14.488Z",
+      "messageCount": 11,
+      "biases": null,
+      "patterns": null,
+      "emotionalState": null,
+      "insights": null
+    },
+    {
+      "id": "cmios5c4n000tq5l5km7q6lj6",
+      "date": "2025-12-02T16:15:58.632Z",
+      "messageCount": 4,
+      "biases": null,
+      "patterns": null,
+      "emotionalState": null,
+      "insights": null
+    },
+    {
+      "id": "cmios48l0000jq5l5vau4v170",
+      "date": "2025-12-02T16:15:07.380Z",
+      "messageCount": 4,
+      "biases": null,
+      "patterns": null,
+      "emotionalState": null,
+      "insights": null
+    }
+  ],
+  "analyses": []
+}
