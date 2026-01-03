@@ -63,8 +63,8 @@ export const dashboardData = {
   // Empty orders - will be populated from real orders
   recentOrders: [],
 
-  // Empty subscribers
-  recentSubscribers: []
+  // Empty email subscriptions - will be populated from real signups
+  emailSubscriptions: []
 };
 
 export default dashboardData;

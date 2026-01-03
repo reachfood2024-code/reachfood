@@ -260,4 +260,41 @@ router.get('/traffic', async (req, res, next) => {
   }
 });
 
+// ============================================
+// GET /api/v1/metrics/emails - Email subscriptions list
+// ============================================
+router.get('/emails', async (req, res, next) => {
+  try {
+    const { limit = '100' } = req.query;
+
+    const emails = await query(`
+      SELECT
+        id,
+        email,
+        source,
+        subscribed_at,
+        is_active
+      FROM email_subscriptions
+      WHERE is_active = TRUE
+      ORDER BY subscribed_at DESC
+      LIMIT ${parseInt(limit)}
+    `);
+
+    res.json({
+      data: {
+        emailSubscriptions: emails.rows.map(r => ({
+          id: r.id,
+          email: r.email,
+          source: r.source || 'footer',
+          subscribedAt: r.subscribed_at,
+          isActive: r.is_active
+        })),
+        total: emails.rows.length
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default router;

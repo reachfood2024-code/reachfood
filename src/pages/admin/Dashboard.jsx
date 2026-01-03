@@ -83,25 +83,27 @@ export default function Dashboard() {
 
       try {
         // Fetch all data in parallel
-        const [metricsRes, trendsRes, productsRes, trafficRes, ordersRes] = await Promise.all([
+        const [metricsRes, trendsRes, productsRes, trafficRes, ordersRes, emailsRes] = await Promise.all([
           fetch(`${API_URL}/metrics/summary?range=${dateRange}`),
           fetch(`${API_URL}/metrics/trends?range=${dateRange}`),
           fetch(`${API_URL}/metrics/products?range=${dateRange}`),
           fetch(`${API_URL}/metrics/traffic?range=${dateRange}`),
-          fetch(`${API_URL}/orders?limit=8`)
+          fetch(`${API_URL}/orders?limit=8`),
+          fetch(`${API_URL}/metrics/emails?limit=100`)
         ]);
 
         // Check if all responses are OK
-        if (!metricsRes.ok || !trendsRes.ok || !productsRes.ok || !trafficRes.ok || !ordersRes.ok) {
+        if (!metricsRes.ok || !trendsRes.ok || !productsRes.ok || !trafficRes.ok || !ordersRes.ok || !emailsRes.ok) {
           throw new Error('API request failed');
         }
 
-        const [metrics, trends, products, traffic, orders] = await Promise.all([
+        const [metrics, trends, products, traffic, orders, emails] = await Promise.all([
           metricsRes.json(),
           trendsRes.json(),
           productsRes.json(),
           trafficRes.json(),
-          ordersRes.json()
+          ordersRes.json(),
+          emailsRes.json()
         ]);
 
         setData({
@@ -109,7 +111,8 @@ export default function Dashboard() {
           ...trends.data,
           ...products.data,
           ...traffic.data,
-          ...orders.data
+          ...orders.data,
+          ...emails.data
         });
       } catch (err) {
         console.warn('API unavailable, using mock data:', err.message);
@@ -262,6 +265,20 @@ export default function Dashboard() {
       label: 'Share',
       align: 'right',
       render: (value) => `${value}%`
+    }
+  ];
+
+  const emailColumns = [
+    { key: 'email', label: 'Email Address' },
+    { key: 'source', label: 'Source' },
+    {
+      key: 'subscribedAt',
+      label: 'Subscribed Date',
+      render: (value) => new Date(value).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      })
     }
   ];
 
@@ -542,6 +559,25 @@ export default function Dashboard() {
                 </button>
               )}
             </div>
+          </div>
+        </div>
+
+        {/* Email Subscriptions */}
+        <div className="mb-6">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-heading/10">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="font-playfair text-xl font-semibold text-heading">Email Subscriptions</h3>
+                <p className="text-sm text-heading-light mt-1">
+                  Newsletter subscribers ({displayData.emailSubscriptions?.length || 0} total)
+                </p>
+              </div>
+            </div>
+
+            <DataTable
+              columns={emailColumns}
+              data={displayData.emailSubscriptions || []}
+            />
           </div>
         </div>
 
