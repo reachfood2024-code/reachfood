@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
+import { analytics } from '../../services/analytics';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -15,15 +16,21 @@ export default function Footer() {
 
     setIsSubmitting(true);
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      // Send email to backend
+      await analytics.emailSignup(email, 'footer');
 
-    setIsSubmitting(false);
-    setSubscribed(true);
-    setEmail('');
+      setSubscribed(true);
+      setEmail('');
 
-    // Reset success message after 5 seconds
-    setTimeout(() => setSubscribed(false), 5000);
+      // Reset success message after 5 seconds
+      setTimeout(() => setSubscribed(false), 5000);
+    } catch (error) {
+      console.error('Newsletter subscription failed:', error);
+      // You could add error state here if needed
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const footerLinks = {
