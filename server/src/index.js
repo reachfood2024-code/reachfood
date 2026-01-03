@@ -6,6 +6,8 @@ import { pool, testConnection } from './database/db.js';
 import trackingRoutes from './routes/tracking.js';
 import metricsRoutes from './routes/metrics.js';
 import ordersRoutes from './routes/orders.js';
+import subscriptionsRoutes from './routes/subscriptions.js';
+import ga4Routes from './routes/ga4.js';
 
 dotenv.config();
 
@@ -58,6 +60,7 @@ app.get('/api/health', async (req, res) => {
 app.use('/api/v1/track', trackingRoutes);
 app.use('/api/v1/metrics', metricsRoutes);
 app.use('/api/v1/orders', ordersRoutes);
+app.use('/api/v1/subscriptions', subscriptionsRoutes);
 
 // Error handler
 app.use((err, req, res, next) => {

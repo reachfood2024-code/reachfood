@@ -322,3 +322,67 @@ BEGIN
     updated_at = NOW();
 END;
 $$ LANGUAGE plpgsql;
+
+-- ============================================
+-- SUBSCRIPTIONS: Meal plan subscription requests
+-- ============================================
+CREATE TABLE IF NOT EXISTS subscriptions (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  subscription_number TEXT NOT NULL UNIQUE,  -- Human-readable: SUB-001234
+
+  -- Customer info
+  customer_name TEXT NOT NULL,
+  customer_phone TEXT NOT NULL,
+  customer_email TEXT NOT NULL,
+
+  -- Plan details
+  plan_id TEXT NOT NULL,
+  plan_name TEXT NOT NULL,
+  meals_per_day INTEGER NOT NULL,
+  total_meals INTEGER NOT NULL,
+  subscription_days INTEGER NOT NULL DEFAULT 26,
+
+  -- Pricing
+  price_usd NUMERIC(10,2) NOT NULL,
+  price_sar NUMERIC(10,2) NOT NULL,
+  currency TEXT NOT NULL DEFAULT 'USD' CHECK (currency IN ('USD', 'SAR')),
+
+  -- Status
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN (
+    'pending', 'contacted', 'confirmed', 'active', 'completed', 'cancelled'
+  )),
+
+  -- Notes
+  admin_notes TEXT,
+
+  -- Timestamps
+  submitted_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  contacted_at TIMESTAMPTZ,
+  confirmed_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_subscriptions_number ON subscriptions(subscription_number);
+CREATE INDEX IF NOT EXISTS idx_subscriptions_status ON subscriptions(status);
+CREATE INDEX IF NOT EXISTS idx_subscriptions_submitted ON subscriptions(submitted_at DESC);
+CREATE INDEX IF NOT EXISTS idx_subscriptions_email ON subscriptions(customer_email);
+
+DROP TRIGGER IF EXISTS set_subscriptions_updated ON subscriptions;
+CREATE TRIGGER set_subscriptions_updated
+  BEFORE UPDATE ON subscriptions
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+-- Function to generate subscription number
+CREATE OR REPLACE FUNCTION generate_subscription_number()
+RETURNS TEXT AS $$
+DECLARE
+  new_number TEXT;
+  sub_count INTEGER;
+BEGIN
+  SELECT COUNT(*) + 1 INTO sub_count FROM subscriptions;
+  new_number := 'SUB-' || LPAD(sub_count::TEXT, 6, '0');
+  RETURN new_number;
+END;
+$$ LANGUAGE plpgsql;

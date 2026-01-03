@@ -29,6 +29,7 @@ export default function Navbar() {
   const navLinks = [
     { name: t('nav.home'), path: '/' },
     { name: t('nav.shop'), path: '/shop' },
+    { name: t('nav.offers'), path: '/offers' },
   ];
 
   const pagesLinks = [

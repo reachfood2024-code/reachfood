@@ -11,6 +11,7 @@ import About from './pages/About'
 import Contact from './pages/Contact'
 import Partner from './pages/Partner'
 import FAQ from './pages/FAQ'
+import Offers from './pages/Offers'
 import ProductCheckout from './pages/ProductCheckout'
 import Checkout from './pages/Checkout'
 import OrderConfirmation from './pages/OrderConfirmation'
@@ -58,6 +59,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/shop" element={<Shop />} />
+          <Route path="/offers" element={<Offers />} />
           <Route path="/product/:id" element={<ProductCheckout />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/order-confirmation" element={<OrderConfirmation />} />

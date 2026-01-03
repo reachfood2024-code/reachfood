@@ -76,6 +76,17 @@ export default function Dashboard() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Subscriptions State
+  const [subscriptions, setSubscriptions] = useState([]);
+  const [subscriptionStats, setSubscriptionStats] = useState({});
+  const [subscriptionFilter, setSubscriptionFilter] = useState('all');
+  const [subscriptionSearch, setSubscriptionSearch] = useState('');
+
+  // GA4 Data State
+  const [ga4Data, setGa4Data] = useState(null);
+  const [ga4Status, setGa4Status] = useState('checking'); // 'connected', 'disconnected', 'checking'
+  const [ga4Loading, setGa4Loading] = useState(true);
+
   // Fetch data from API
   useEffect(() => {
     async function fetchData() {
@@ -84,13 +95,14 @@ export default function Dashboard() {
 
       try {
         // Fetch all data in parallel
-        const [metricsRes, trendsRes, productsRes, trafficRes, ordersRes, emailsRes] = await Promise.all([
+        const [metricsRes, trendsRes, productsRes, trafficRes, ordersRes, emailsRes, subscriptionsRes] = await Promise.all([
           fetch(`${API_URL}/metrics/summary?range=${dateRange}`),
           fetch(`${API_URL}/metrics/trends?range=${dateRange}`),
           fetch(`${API_URL}/metrics/products?range=${dateRange}`),
           fetch(`${API_URL}/metrics/traffic?range=${dateRange}`),
           fetch(`${API_URL}/orders?limit=8`),
-          fetch(`${API_URL}/metrics/emails?limit=100`)
+          fetch(`${API_URL}/metrics/emails?limit=100`),
+          fetch(`${API_URL}/subscriptions?limit=50`)
         ]);
 
         // Check if all responses are OK
@@ -98,14 +110,21 @@ export default function Dashboard() {
           throw new Error('API request failed');
         }
 
-        const [metrics, trends, products, traffic, orders, emails] = await Promise.all([
+        const [metrics, trends, products, traffic, orders, emails, subscriptionsData] = await Promise.all([
           metricsRes.json(),
           trendsRes.json(),
           productsRes.json(),
           trafficRes.json(),
           ordersRes.json(),
-          emailsRes.json()
+          emailsRes.json(),
+          subscriptionsRes.ok ? subscriptionsRes.json() : { data: { subscriptions: [], stats: {} } }
         ]);
+
+        // Set subscriptions data
+        if (subscriptionsData.data) {
+          setSubscriptions(subscriptionsData.data.subscriptions || []);
+          setSubscriptionStats(subscriptionsData.data.stats || {});
+        }
 
         setData({
           metrics: metrics.data.metrics,
@@ -176,6 +195,51 @@ export default function Dashboard() {
       console.warn('API update failed, status saved locally:', err.message);
     }
   };
+
+  // Handle subscription status change
+  const handleSubscriptionStatusChange = async (subscriptionId, newStatus) => {
+    try {
+      await fetch(`${API_URL}/subscriptions/${subscriptionId}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      });
+
+      // Update local state
+      setSubscriptions(prev =>
+        prev.map(sub =>
+          sub.id === subscriptionId ? { ...sub, status: newStatus } : sub
+        )
+      );
+
+      // Update stats
+      setSubscriptionStats(prev => {
+        const oldStatus = subscriptions.find(s => s.id === subscriptionId)?.status;
+        if (oldStatus && oldStatus !== newStatus) {
+          return {
+            ...prev,
+            [oldStatus]: Math.max(0, (parseInt(prev[oldStatus]) || 0) - 1),
+            [newStatus]: (parseInt(prev[newStatus]) || 0) + 1
+          };
+        }
+        return prev;
+      });
+    } catch (err) {
+      console.warn('Failed to update subscription status:', err.message);
+    }
+  };
+
+  // Filter subscriptions
+  const filteredSubscriptions = subscriptions.filter(sub => {
+    const matchesStatus = subscriptionFilter === 'all' || sub.status === subscriptionFilter;
+    const matchesSearch = subscriptionSearch === '' ||
+      sub.id.toLowerCase().includes(subscriptionSearch.toLowerCase()) ||
+      sub.name.toLowerCase().includes(subscriptionSearch.toLowerCase()) ||
+      sub.phone.includes(subscriptionSearch) ||
+      sub.email.toLowerCase().includes(subscriptionSearch.toLowerCase()) ||
+      sub.plan_name.toLowerCase().includes(subscriptionSearch.toLowerCase());
+    return matchesStatus && matchesSearch;
+  });
 
   // Reset all order data to fresh state
   const handleResetData = () => {
@@ -565,6 +629,151 @@ export default function Dashboard() {
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
+                  className="text-xs text-primary hover:text-primary-hover"
+                >
+                  Clear search
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Meal Plan Subscriptions */}
+        <div className="mb-8">
+          <div className="bg-white rounded-2xl p-6 shadow-sm">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+              <div>
+                <h3 className="font-playfair text-xl font-semibold text-heading">Meal Plan Subscriptions</h3>
+                <p className="text-sm text-heading-light mt-1">Manage subscription requests from the Offers page</p>
+              </div>
+
+              {/* Subscription Stats */}
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => setSubscriptionFilter('all')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${subscriptionFilter === 'all' ? 'bg-heading text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                >
+                  All ({subscriptionStats.total || 0})
+                </button>
+                <button
+                  onClick={() => setSubscriptionFilter('pending')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${subscriptionFilter === 'pending' ? 'bg-gray-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                >
+                  Pending ({subscriptionStats.pending || 0})
+                </button>
+                <button
+                  onClick={() => setSubscriptionFilter('contacted')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${subscriptionFilter === 'contacted' ? 'bg-blue-500 text-white' : 'bg-blue-100 text-blue-700 hover:bg-blue-200'}`}
+                >
+                  Contacted ({subscriptionStats.contacted || 0})
+                </button>
+                <button
+                  onClick={() => setSubscriptionFilter('confirmed')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${subscriptionFilter === 'confirmed' ? 'bg-purple-500 text-white' : 'bg-purple-100 text-purple-700 hover:bg-purple-200'}`}
+                >
+                  Confirmed ({subscriptionStats.confirmed || 0})
+                </button>
+                <button
+                  onClick={() => setSubscriptionFilter('active')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${subscriptionFilter === 'active' ? 'bg-green-500 text-white' : 'bg-green-100 text-green-700 hover:bg-green-200'}`}
+                >
+                  Active ({subscriptionStats.active || 0})
+                </button>
+                <button
+                  onClick={() => setSubscriptionFilter('cancelled')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${subscriptionFilter === 'cancelled' ? 'bg-red-500 text-white' : 'bg-red-100 text-red-700 hover:bg-red-200'}`}
+                >
+                  Cancelled ({subscriptionStats.cancelled || 0})
+                </button>
+              </div>
+            </div>
+
+            {/* Search Bar */}
+            <div className="mb-4">
+              <input
+                type="text"
+                placeholder="Search by ID, Name, Phone, Email, or Plan..."
+                value={subscriptionSearch}
+                onChange={(e) => setSubscriptionSearch(e.target.value)}
+                className="w-full px-4 py-2.5 bg-cream rounded-lg text-sm text-heading border-none focus:ring-2 focus:ring-primary/30 placeholder:text-heading-light"
+              />
+            </div>
+
+            {/* Subscriptions Table */}
+            <div className="overflow-x-auto -mx-6 px-6">
+              <table className="w-full min-w-[1000px]">
+                <thead>
+                  <tr className="border-b border-heading/10">
+                    <th className="text-left text-xs font-semibold text-heading-light uppercase tracking-wider py-3 px-2">ID</th>
+                    <th className="text-left text-xs font-semibold text-heading-light uppercase tracking-wider py-3 px-2">Customer</th>
+                    <th className="text-left text-xs font-semibold text-heading-light uppercase tracking-wider py-3 px-2">Phone</th>
+                    <th className="text-left text-xs font-semibold text-heading-light uppercase tracking-wider py-3 px-2">Email</th>
+                    <th className="text-left text-xs font-semibold text-heading-light uppercase tracking-wider py-3 px-2">Plan</th>
+                    <th className="text-right text-xs font-semibold text-heading-light uppercase tracking-wider py-3 px-2">Price</th>
+                    <th className="text-left text-xs font-semibold text-heading-light uppercase tracking-wider py-3 px-2">Status</th>
+                    <th className="text-left text-xs font-semibold text-heading-light uppercase tracking-wider py-3 px-2">Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredSubscriptions.length === 0 ? (
+                    <tr>
+                      <td colSpan={8} className="py-8 text-center text-heading-light">
+                        {subscriptions.length === 0 ? 'No subscription requests yet' : 'No subscriptions match your criteria'}
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredSubscriptions.map((sub) => (
+                      <tr key={sub.id} className="border-b border-heading/5 hover:bg-cream/50 transition-colors">
+                        <td className="py-3 px-2 text-sm text-heading font-mono">{sub.id}</td>
+                        <td className="py-3 px-2 text-sm text-heading font-medium">{sub.name}</td>
+                        <td className="py-3 px-2 text-sm text-heading">{sub.phone}</td>
+                        <td className="py-3 px-2 text-sm text-heading">{sub.email}</td>
+                        <td className="py-3 px-2 text-sm text-heading">
+                          <div>
+                            <span className="font-medium">{sub.plan_name}</span>
+                            <span className="text-heading-light text-xs block">{sub.meals_per_day} meals/day - {sub.total_meals} total</span>
+                          </div>
+                        </td>
+                        <td className="py-3 px-2 text-sm text-heading text-right font-medium">
+                          {sub.currency === 'SAR' ? `${sub.price_sar} SAR` : `$${sub.price_usd}`}
+                        </td>
+                        <td className="py-3 px-2">
+                          <select
+                            value={sub.status}
+                            onChange={(e) => handleSubscriptionStatusChange(sub.id, e.target.value)}
+                            className={`px-2 py-1 rounded-lg text-xs font-medium border-none cursor-pointer focus:ring-2 focus:ring-primary/30 ${
+                              sub.status === 'pending' ? 'bg-gray-100 text-gray-700' :
+                              sub.status === 'contacted' ? 'bg-blue-100 text-blue-700' :
+                              sub.status === 'confirmed' ? 'bg-purple-100 text-purple-700' :
+                              sub.status === 'active' ? 'bg-green-100 text-green-700' :
+                              sub.status === 'completed' ? 'bg-teal-100 text-teal-700' :
+                              'bg-red-100 text-red-700'
+                            }`}
+                          >
+                            <option value="pending">Pending</option>
+                            <option value="contacted">Contacted</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="active">Active</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                          </select>
+                        </td>
+                        <td className="py-3 px-2 text-sm text-heading-light">{sub.date}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Results count */}
+            <div className="mt-4 pt-3 border-t border-heading/10 flex justify-between items-center">
+              <p className="text-xs text-heading-light">
+                Showing {filteredSubscriptions.length} of {subscriptions.length} subscriptions
+              </p>
+              {subscriptionSearch && (
+                <button
+                  onClick={() => setSubscriptionSearch('')}
                   className="text-xs text-primary hover:text-primary-hover"
                 >
                   Clear search
