@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { useCart } from '../context/CartContext';
+import { validateEmail, getEmailErrorMessage } from '../utils/emailValidation';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1';
 const GOOGLE_SCRIPT_URL = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
@@ -166,10 +167,9 @@ export default function Offers() {
     if (!formData.phone.trim()) {
       newErrors.phone = t('offers.requiredField');
     }
-    if (!formData.email.trim()) {
-      newErrors.email = t('offers.requiredField');
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = t('offers.invalidEmail');
+    const emailValidation = validateEmail(formData.email);
+    if (!emailValidation.valid) {
+      newErrors.email = getEmailErrorMessage(emailValidation, t);
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;

@@ -4,6 +4,7 @@ import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
 import { productTranslations } from '../data/translations';
 import { analytics } from '../services/analytics';
+import { validateEmail, getEmailErrorMessage } from '../utils/emailValidation';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1';
 
@@ -88,10 +89,9 @@ export default function Checkout() {
       newErrors.phone = t('checkout.phoneInvalid');
     }
 
-    if (!formData.email.trim()) {
-      newErrors.email = t('checkout.emailRequired');
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
-      newErrors.email = t('checkout.emailInvalid');
+    const emailValidation = validateEmail(formData.email);
+    if (!emailValidation.valid) {
+      newErrors.email = getEmailErrorMessage(emailValidation, t);
     }
 
     if (!formData.address.trim()) {

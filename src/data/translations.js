@@ -15,6 +15,14 @@ export const translations = {
       currency: 'Currency',
     },
 
+    // Validation Messages
+    validation: {
+      emailRequired: 'Email is required',
+      emailInvalid: 'Please enter a valid email address',
+      emailTypo: 'Did you mean {suggestion}?',
+      emailUnknownProvider: 'Please use a valid email provider (Gmail, Hotmail, Yahoo, etc.)',
+    },
+
     // Hero Section
     hero: {
       tagline: 'Heat & Eat',
@@ -525,6 +533,14 @@ export const translations = {
       search: 'بحث',
       searchPlaceholder: 'ابحث عن وجبات لذيذة...',
       currency: 'العملة',
+    },
+
+    // Validation Messages
+    validation: {
+      emailRequired: 'البريد الإلكتروني مطلوب',
+      emailInvalid: 'يرجى إدخال بريد إلكتروني صالح',
+      emailTypo: 'هل تقصد {suggestion}؟',
+      emailUnknownProvider: 'يرجى استخدام مزود بريد إلكتروني معروف (Gmail, Hotmail, Yahoo, إلخ)',
     },
 
     // Hero Section
