@@ -896,7 +896,7 @@ export const productTranslations = {
     1: {
       name: "Grilled Chicken with Vegetables",
       description: "Ready to Eat & Long shelf life. Grilled chicken with nutritious vegetables, served with lentil soup, rice, protein energy bar, tea/coffee/juice, and a small plantable seed.",
-      nutritionHighlights: ["Ready to Eat", "Long shelf life - Optional", "Balanced nutrition"],
+      nutritionHighlights: ["Ready to Eat", "Long shelf life (Optional)", "Balanced nutrition"],
       mealComponents: ["Lentil or Vegetable Soup", "Rice", "Protein-Fortified Energy Bar", "Tea / Coffee / Fresh Juice", "Small Plant (plantable after meal, water-retaining for 2 weeks)"],
       nutritionFacts: {
         servingSize: "1 plate (~375g)",
@@ -1007,7 +1007,7 @@ export const productTranslations = {
     1: {
       name: "دجاج مشوي مع الخضار",
       description: "جاهز للأكل وطويل مدة الصلاحية. دجاج مشوي مع خضار مغذية، يُقدم مع شوربة العدس، أرز، لوح طاقة بروتين، شاي/قهوة/عصير، ونبتة صغيرة للزراعة.",
-      nutritionHighlights: ["جاهز للأكل", "طويل مدة الصلاحية - اختياري", "تغذية متوازنة"],
+      nutritionHighlights: ["جاهز للأكل", "طويل مدة الصلاحية (اختياري)", "تغذية متوازنة"],
       mealComponents: ["شوربة العدس والخضار", "الأرز", "لوح طاقة مدعم بالبروتين", "شاي / قهوة / عصير طبيعي", "نبتة صغيرة (للزراعة بعد الوجبة، تحافظ المياه لمدة أسبوعين)"],
       nutritionFacts: {
         servingSize: "طبق واحد (~375 غرام)",
