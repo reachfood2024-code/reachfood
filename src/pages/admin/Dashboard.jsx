@@ -69,6 +69,7 @@ export default function Dashboard() {
   const [dateRange, setDateRange] = useState('30');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [apiStatus, setApiStatus] = useState('checking'); // 'live', 'mock', 'checking'
   const [data, setData] = useState(null);
   const [orderStatuses, setOrderStatuses] = useState(loadSavedStatuses);
   const [revenueAdjustment, setRevenueAdjustment] = useState(loadRevenueAdjustment);
@@ -114,9 +115,12 @@ export default function Dashboard() {
           ...orders.data,
           ...emails.data
         });
+        setApiStatus('live');
+        setError(null);
       } catch (err) {
         console.warn('API unavailable, using mock data:', err.message);
         setError('Using demo data - API not connected');
+        setApiStatus('mock');
         // Use mock data as fallback
         setData(mockData);
       } finally {
@@ -303,14 +307,22 @@ export default function Dashboard() {
 
             {/* Right: Status + Date Range + Back to Site */}
             <div className="flex items-center gap-4">
-              {error && (
-                <span className="text-xs text-yellow-600 bg-yellow-50 px-2 py-1 rounded">
-                  {error}
-                </span>
-              )}
-              {loading && (
-                <span className="text-xs text-heading-light">Loading...</span>
-              )}
+              {/* API Connection Status */}
+              <div className="flex items-center gap-2">
+                {loading ? (
+                  <span className="text-xs text-heading-light">Loading...</span>
+                ) : apiStatus === 'live' ? (
+                  <span className="flex items-center gap-1.5 text-xs text-green-600 bg-green-50 px-2 py-1 rounded">
+                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                    Live Data
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1.5 text-xs text-yellow-600 bg-yellow-50 px-2 py-1 rounded">
+                    <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                    Demo Mode
+                  </span>
+                )}
+              </div>
               <select
                 value={dateRange}
                 onChange={(e) => setDateRange(e.target.value)}
@@ -596,7 +608,9 @@ export default function Dashboard() {
             ReachFood Analytics Dashboard
           </p>
           <p className="text-xs text-heading-light mt-1">
-            {data === mockData ? 'Demo mode - Connect API for live data' : 'Live data from API'}
+            {apiStatus === 'live'
+              ? `Live data from ${API_URL.replace('/api/v1', '')}`
+              : 'Demo mode - Check API connection'}
           </p>
         </div>
       </main>

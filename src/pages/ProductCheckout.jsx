@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getProductById } from '../data/products';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
 import { productTranslations } from '../data/translations';
+import { analytics } from '../services/analytics';
 
 export default function ProductCheckout() {
   const { id } = useParams();
@@ -12,6 +13,15 @@ export default function ProductCheckout() {
   const { t, language, isRTL } = useLanguage();
   const [quantity, setQuantity] = useState(1);
   const [showSuccess, setShowSuccess] = useState(false);
+  const hasTrackedView = useRef(false);
+
+  // Track product view in GA4
+  useEffect(() => {
+    if (product && !hasTrackedView.current) {
+      hasTrackedView.current = true;
+      analytics.viewItem(product);
+    }
+  }, [product]);
 
   if (!product) {
     return (

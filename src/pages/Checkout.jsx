@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -21,6 +21,15 @@ export default function Checkout() {
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const hasTrackedCheckout = useRef(false);
+
+  // Track begin_checkout event when page loads with items
+  useEffect(() => {
+    if (cartItems.length > 0 && !hasTrackedCheckout.current) {
+      hasTrackedCheckout.current = true;
+      analytics.beginCheckout(cartItems, cartTotal);
+    }
+  }, [cartItems, cartTotal]);
 
   // If cart is empty, show empty state
   if (cartItems.length === 0) {
@@ -141,6 +150,18 @@ export default function Checkout() {
       if (response.ok) {
         const data = await response.json();
         orderNumber = data.data.orderNumber;
+
+        // Track purchase in GA4
+        analytics.purchase({
+          orderId: orderNumber,
+          total: cartTotal,
+          items: cartItems.map(item => ({
+            id: item.id,
+            name: productTranslations['en']?.[item.id]?.name || item.name,
+            price: item.price,
+            quantity: item.quantity
+          }))
+        });
       } else {
         // Fallback to random order number if API fails
         orderNumber = 'ORD-' + Math.floor(100000 + Math.random() * 900000);

@@ -1,4 +1,6 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
+import { useEffect, useRef } from 'react'
+import { analytics } from './services/analytics'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 import CartDrawer from './components/cart/CartDrawer'
@@ -18,6 +20,22 @@ import AdminAuth from './components/admin/AdminAuth'
 function App() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
+  const isInitialized = useRef(false);
+
+  // Initialize analytics session on app load
+  useEffect(() => {
+    if (!isInitialized.current) {
+      isInitialized.current = true;
+      analytics.initSession();
+    }
+  }, []);
+
+  // Track page views on route change
+  useEffect(() => {
+    if (!isAdminRoute) {
+      analytics.pageView(location.pathname);
+    }
+  }, [location.pathname, isAdminRoute]);
 
   // Admin routes render without main layout, protected by AdminAuth
   if (isAdminRoute) {
