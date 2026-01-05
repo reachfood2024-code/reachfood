@@ -22,10 +22,18 @@ function getClient() {
     // or can parse JSON credentials for cloud deployments
     if (credentialsJson) {
       try {
-        const credentials = JSON.parse(credentialsJson);
+        // Handle escaped newlines from environment variables
+        let jsonString = credentialsJson;
+        // If the JSON was double-escaped, fix it
+        if (jsonString.includes('\\\\n')) {
+          jsonString = jsonString.replace(/\\\\n/g, '\\n');
+        }
+        const credentials = JSON.parse(jsonString);
         analyticsDataClient = new BetaAnalyticsDataClient({ credentials });
       } catch (e) {
-        throw new Error('Invalid GA4_CREDENTIALS_JSON format');
+        console.error('GA4 JSON parse error:', e.message);
+        console.error('GA4_CREDENTIALS_JSON first 100 chars:', credentialsJson?.substring(0, 100));
+        throw new Error(`Invalid GA4_CREDENTIALS_JSON format: ${e.message}`);
       }
     } else if (credentialsPath) {
       // Uses the GOOGLE_APPLICATION_CREDENTIALS environment variable
