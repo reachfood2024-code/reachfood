@@ -86,6 +86,7 @@ export default function Dashboard() {
   const [ga4Data, setGa4Data] = useState(null);
   const [ga4Status, setGa4Status] = useState('checking'); // 'connected', 'disconnected', 'checking'
   const [ga4Loading, setGa4Loading] = useState(true);
+  const [ga4Error, setGa4Error] = useState(null);
 
   // Fetch data from API
   useEffect(() => {
@@ -148,6 +149,46 @@ export default function Dashboard() {
     }
 
     fetchData();
+  }, [dateRange]);
+
+  // Fetch GA4 data
+  useEffect(() => {
+    async function fetchGA4Data() {
+      setGa4Loading(true);
+      setGa4Error(null);
+
+      try {
+        // First check GA4 connection status
+        const statusRes = await fetch(`${API_URL}/ga4/status`);
+        const statusData = await statusRes.json();
+
+        if (!statusData.data?.connected) {
+          setGa4Status('disconnected');
+          setGa4Error(statusData.data?.message || 'GA4 not configured');
+          setGa4Loading(false);
+          return;
+        }
+
+        // Fetch GA4 summary data
+        const summaryRes = await fetch(`${API_URL}/ga4/summary?range=${dateRange}`);
+
+        if (!summaryRes.ok) {
+          throw new Error('Failed to fetch GA4 data');
+        }
+
+        const summaryData = await summaryRes.json();
+        setGa4Data(summaryData.data);
+        setGa4Status('connected');
+      } catch (err) {
+        console.warn('GA4 data fetch failed:', err.message);
+        setGa4Status('disconnected');
+        setGa4Error(err.message);
+      } finally {
+        setGa4Loading(false);
+      }
+    }
+
+    fetchGA4Data();
   }, [dateRange]);
 
   // Handle order status change with revenue sync
@@ -474,6 +515,207 @@ export default function Dashboard() {
             period={metrics.conversionRate.period}
             suffix={metrics.conversionRate.suffix}
           />
+        </div>
+
+        {/* GA4 Analytics Section */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="font-playfair text-xl font-semibold text-heading">Google Analytics 4</h3>
+              <p className="text-sm text-heading-light mt-1">Real-time and historical data from GA4</p>
+            </div>
+            <div className="flex items-center gap-2">
+              {ga4Loading ? (
+                <span className="text-xs text-heading-light">Loading GA4...</span>
+              ) : ga4Status === 'connected' ? (
+                <span className="flex items-center gap-1.5 text-xs text-green-600 bg-green-50 px-2 py-1 rounded">
+                  <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                  GA4 Connected
+                </span>
+              ) : (
+                <span className="flex items-center gap-1.5 text-xs text-red-600 bg-red-50 px-2 py-1 rounded">
+                  <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                  GA4 Disconnected
+                </span>
+              )}
+            </div>
+          </div>
+
+          {ga4Status === 'connected' && ga4Data ? (
+            <>
+              {/* GA4 Metrics Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-6">
+                {/* Real-time Users */}
+                <div className="bg-gradient-to-br from-primary to-primary-hover rounded-2xl p-4 text-white">
+                  <p className="text-xs opacity-80 mb-1">Live Now</p>
+                  <p className="text-3xl font-bold">{ga4Data.realtime?.activeUsers || 0}</p>
+                  <p className="text-xs opacity-80 mt-1">active users</p>
+                </div>
+
+                {/* Overview Metrics */}
+                <div className="bg-white rounded-2xl p-4 shadow-sm border border-heading/10">
+                  <p className="text-xs text-heading-light mb-1">Total Users</p>
+                  <p className="text-2xl font-bold text-heading">{(ga4Data.overview?.users || 0).toLocaleString()}</p>
+                </div>
+                <div className="bg-white rounded-2xl p-4 shadow-sm border border-heading/10">
+                  <p className="text-xs text-heading-light mb-1">New Users</p>
+                  <p className="text-2xl font-bold text-heading">{(ga4Data.overview?.newUsers || 0).toLocaleString()}</p>
+                </div>
+                <div className="bg-white rounded-2xl p-4 shadow-sm border border-heading/10">
+                  <p className="text-xs text-heading-light mb-1">Sessions</p>
+                  <p className="text-2xl font-bold text-heading">{(ga4Data.overview?.sessions || 0).toLocaleString()}</p>
+                </div>
+                <div className="bg-white rounded-2xl p-4 shadow-sm border border-heading/10">
+                  <p className="text-xs text-heading-light mb-1">Page Views</p>
+                  <p className="text-2xl font-bold text-heading">{(ga4Data.overview?.pageViews || 0).toLocaleString()}</p>
+                </div>
+                <div className="bg-white rounded-2xl p-4 shadow-sm border border-heading/10">
+                  <p className="text-xs text-heading-light mb-1">Avg. Duration</p>
+                  <p className="text-2xl font-bold text-heading">{ga4Data.overview?.avgSessionDuration || '0'}s</p>
+                </div>
+                <div className="bg-white rounded-2xl p-4 shadow-sm border border-heading/10">
+                  <p className="text-xs text-heading-light mb-1">Bounce Rate</p>
+                  <p className="text-2xl font-bold text-heading">{ga4Data.overview?.bounceRate || '0'}%</p>
+                </div>
+              </div>
+
+              {/* GA4 Details Grid */}
+              <div className="grid lg:grid-cols-3 gap-6">
+                {/* Top Pages */}
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-heading/10">
+                  <h4 className="font-semibold text-heading mb-4">Top Pages</h4>
+                  <div className="space-y-3">
+                    {(ga4Data.topPages || []).slice(0, 5).map((page, i) => (
+                      <div key={i} className="flex items-center justify-between">
+                        <span className="text-sm text-heading truncate max-w-[180px]" title={page.page}>
+                          {page.page}
+                        </span>
+                        <span className="text-sm font-medium text-heading-light">
+                          {page.pageViews.toLocaleString()}
+                        </span>
+                      </div>
+                    ))}
+                    {(!ga4Data.topPages || ga4Data.topPages.length === 0) && (
+                      <p className="text-sm text-heading-light">No page data yet</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Traffic Sources */}
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-heading/10">
+                  <h4 className="font-semibold text-heading mb-4">Traffic Sources</h4>
+                  <div className="space-y-3">
+                    {(ga4Data.trafficSources || []).slice(0, 5).map((source, i) => (
+                      <div key={i} className="flex items-center justify-between">
+                        <span className="text-sm text-heading">{source.source}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-heading-light">
+                            {source.sessions.toLocaleString()}
+                          </span>
+                          <span className="text-xs text-primary bg-primary/10 px-1.5 py-0.5 rounded">
+                            {source.percentage}%
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                    {(!ga4Data.trafficSources || ga4Data.trafficSources.length === 0) && (
+                      <p className="text-sm text-heading-light">No traffic data yet</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Devices & Countries */}
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-heading/10">
+                  <h4 className="font-semibold text-heading mb-4">Devices</h4>
+                  <div className="space-y-2 mb-6">
+                    {(ga4Data.devices || []).map((device, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-sm text-heading capitalize">{device.device}</span>
+                            <span className="text-xs text-heading-light">{device.percentage}%</span>
+                          </div>
+                          <div className="h-2 bg-cream rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-primary rounded-full transition-all"
+                              style={{ width: `${device.percentage}%` }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    {(!ga4Data.devices || ga4Data.devices.length === 0) && (
+                      <p className="text-sm text-heading-light">No device data yet</p>
+                    )}
+                  </div>
+
+                  <h4 className="font-semibold text-heading mb-4">Top Countries</h4>
+                  <div className="space-y-2">
+                    {(ga4Data.countries || []).slice(0, 4).map((country, i) => (
+                      <div key={i} className="flex items-center justify-between">
+                        <span className="text-sm text-heading">{country.country}</span>
+                        <span className="text-sm font-medium text-heading-light">
+                          {country.users.toLocaleString()} users
+                        </span>
+                      </div>
+                    ))}
+                    {(!ga4Data.countries || ga4Data.countries.length === 0) && (
+                      <p className="text-sm text-heading-light">No country data yet</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* E-commerce Metrics (if available) */}
+              {ga4Data.ecommerce && (ga4Data.ecommerce.transactions > 0 || ga4Data.ecommerce.addToCarts > 0) && (
+                <div className="mt-6">
+                  <h4 className="font-semibold text-heading mb-4">E-commerce (GA4)</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    <div className="bg-white rounded-2xl p-4 shadow-sm border border-heading/10">
+                      <p className="text-xs text-heading-light mb-1">Transactions</p>
+                      <p className="text-xl font-bold text-heading">{ga4Data.ecommerce.transactions}</p>
+                    </div>
+                    <div className="bg-white rounded-2xl p-4 shadow-sm border border-heading/10">
+                      <p className="text-xs text-heading-light mb-1">Revenue</p>
+                      <p className="text-xl font-bold text-heading">${ga4Data.ecommerce.revenue}</p>
+                    </div>
+                    <div className="bg-white rounded-2xl p-4 shadow-sm border border-heading/10">
+                      <p className="text-xs text-heading-light mb-1">Avg Order</p>
+                      <p className="text-xl font-bold text-heading">${ga4Data.ecommerce.avgOrderValue}</p>
+                    </div>
+                    <div className="bg-white rounded-2xl p-4 shadow-sm border border-heading/10">
+                      <p className="text-xs text-heading-light mb-1">Items Viewed</p>
+                      <p className="text-xl font-bold text-heading">{ga4Data.ecommerce.itemsViewed}</p>
+                    </div>
+                    <div className="bg-white rounded-2xl p-4 shadow-sm border border-heading/10">
+                      <p className="text-xs text-heading-light mb-1">Add to Carts</p>
+                      <p className="text-xl font-bold text-heading">{ga4Data.ecommerce.addToCarts}</p>
+                    </div>
+                    <div className="bg-white rounded-2xl p-4 shadow-sm border border-heading/10">
+                      <p className="text-xs text-heading-light mb-1">Checkouts</p>
+                      <p className="text-xl font-bold text-heading">{ga4Data.ecommerce.checkouts}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-heading/10 text-center">
+              {ga4Loading ? (
+                <div className="animate-pulse">
+                  <div className="h-8 w-48 bg-cream rounded mx-auto mb-2"></div>
+                  <div className="h-4 w-64 bg-cream rounded mx-auto"></div>
+                </div>
+              ) : (
+                <>
+                  <p className="text-heading-light mb-2">GA4 is not connected</p>
+                  <p className="text-sm text-heading-light">
+                    {ga4Error || 'Configure GA4_PROPERTY_ID and credentials in your server environment'}
+                  </p>
+                </>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Charts Section - Row 1 */}

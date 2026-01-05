@@ -21,6 +21,10 @@ const allowedOrigins = [
   'https://shop.reachfood.co',
   'https://www.shop.reachfood.co',
   'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:5175',
+  'http://localhost:5176',
+  'http://localhost:5177',
   'http://localhost:3000'
 ];
 
@@ -61,6 +65,7 @@ app.use('/api/v1/track', trackingRoutes);
 app.use('/api/v1/metrics', metricsRoutes);
 app.use('/api/v1/orders', ordersRoutes);
 app.use('/api/v1/subscriptions', subscriptionsRoutes);
+app.use('/api/v1/ga4', ga4Routes);
 
 // Error handler
 app.use((err, req, res, next) => {
@@ -75,7 +80,12 @@ app.use((err, req, res, next) => {
 
 // Start server
 async function start() {
-  await testConnection();
+  try {
+    await testConnection();
+  } catch (error) {
+    console.warn('Database not available, running in limited mode (GA4 still works)');
+  }
+
   app.listen(PORT, () => {
     console.log(`Analytics API running on port ${PORT}`);
     console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
