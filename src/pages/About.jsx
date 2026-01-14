@@ -21,6 +21,18 @@ export default function About() {
       image: '/aboutus/amera.jpg'
     },
     {
+      name: language === 'ar' ? 'د. حسان' : 'Dr. Hassan',
+      role: t('team.cofounder'),
+      description: language === 'ar'
+        ? 'عالم أغذية ومستشار في هيئة الغذاء والدواء السعودية بخبرة تزيد عن 20 عامًا، قمت بريادة أول منصة SaaS رقمية لسلامة الأغذية في المنطقة لأتمتة الضوابط التنظيمية والتشغيلية المعقدة. أقود النمو المؤسسي الاستراتيجي من خلال دمج عقود من البحث التقني وإدارة الجودة على نطاق واسع مع حلول تكنولوجيا المعلومات الحديثة القائمة على البيانات.'
+        : 'Food Scientist and SFDA advisor with over 20 years of experience, I pioneered the region\'s first digitalized food safety SaaS platform to automate complex regulatory and operational controls. I drive strategic institutional growth by merging decades of technical research and large-scale quality management with modern, data-driven IT solutions.',
+      education: language === 'ar'
+        ? 'علوم الأغذية، سلامة الأغذية، الحلول التقنية'
+        : 'Food Science, Food Safety, Technical Solutions',
+      email: 'almasri.h@doyen.sa',
+      image: '/aboutus/hassan.jpg'
+    },
+    {
       name: language === 'ar' ? 'د. الجوهرة السبيعي' : 'Dr. Aljawharah Alsubaie',
       role: t('team.foodAdvisor'),
       description: language === 'ar'
@@ -302,7 +314,7 @@ export default function About() {
                   <p className="text-primary font-medium text-sm mb-4">
                     {member.role}
                   </p>
-                  <p className="text-heading-light text-sm leading-relaxed mb-4 line-clamp-3">
+                  <p className="text-heading-light text-sm leading-relaxed mb-4">
                     {member.description}
                   </p>
                   <p className="text-teal text-xs font-medium mb-4">

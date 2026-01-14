@@ -302,6 +302,7 @@ export const translations = {
     // Team Members
     team: {
       ceoRole: 'CEO & Packaging CPO',
+      cofounder: 'Co-founder',
       foodAdvisor: 'Food Advisor',
       foodRDAdvisor: 'Food R&D Advisor',
       emergencyAdvisor: 'Food For Emergency Advisor',
@@ -822,6 +823,7 @@ export const translations = {
     // Team Members
     team: {
       ceoRole: 'الرئيس التنفيذي ومسؤول التغليف',
+      cofounder: 'شريك مؤسس',
       foodAdvisor: 'مستشار غذائي',
       foodRDAdvisor: 'مستشار البحث والتطوير الغذائي',
       emergencyAdvisor: 'مستشار التغذية في حالات الطوارئ',
