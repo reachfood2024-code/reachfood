@@ -458,6 +458,23 @@ export const translations = {
       selectedPlanLabel: 'Selected Plan',
     },
 
+    // B2B Section
+    b2b: {
+      title: 'For Business Partners',
+      description: 'Are you a restaurant owner looking to enhance your customer experience with self-heating food packaging?',
+      subtitle: 'Join our email waiting list, and our team will reach out to you with tailored solutions, updates, and collaboration opportunities.',
+      businessNamePlaceholder: 'Business Name (optional)',
+      emailPlaceholder: 'Your business email',
+      joining: 'Joining...',
+      joinWaitingList: 'Join Waiting List',
+      emailRequired: 'Please enter your email address',
+      emailInvalid: 'Please enter a valid email address',
+      errorMessage: 'Something went wrong. Please try again.',
+      privacyNote: 'We respect your privacy. No spam, just valuable updates.',
+      successTitle: 'Thank You for Your Interest!',
+      successMessage: "We've added you to our B2B waiting list. Our team will reach out soon with tailored solutions for your business.",
+    },
+
     // FAQ Page
     faq: {
       title: 'Frequently Asked Questions',
@@ -977,6 +994,23 @@ export const translations = {
       requiredField: 'هذا الحقل مطلوب',
       invalidEmail: 'يرجى إدخال بريد إلكتروني صالح',
       selectedPlanLabel: 'الخطة المختارة',
+    },
+
+    // B2B Section
+    b2b: {
+      title: 'لشركاء الأعمال',
+      description: 'هل أنت صاحب مطعم وتبحث عن تحسين تجربة عملائك مع تغليف الطعام ذاتي التسخين؟',
+      subtitle: 'انضم إلى قائمة الانتظار عبر البريد الإلكتروني، وسيتواصل فريقنا معك بحلول مخصصة وتحديثات وفرص تعاون.',
+      businessNamePlaceholder: 'اسم النشاط التجاري (اختياري)',
+      emailPlaceholder: 'بريدك الإلكتروني للعمل',
+      joining: 'جارٍ الانضمام...',
+      joinWaitingList: 'انضم لقائمة الانتظار',
+      emailRequired: 'يرجى إدخال بريدك الإلكتروني',
+      emailInvalid: 'يرجى إدخال بريد إلكتروني صحيح',
+      errorMessage: 'حدث خطأ ما. يرجى المحاولة مرة أخرى.',
+      privacyNote: 'نحترم خصوصيتك. لا رسائل مزعجة، فقط تحديثات قيّمة.',
+      successTitle: 'شكراً لاهتمامك!',
+      successMessage: 'تمت إضافتك إلى قائمة انتظار شركاء الأعمال. سيتواصل فريقنا معك قريباً بحلول مخصصة لعملك.',
     },
 
     // FAQ Page

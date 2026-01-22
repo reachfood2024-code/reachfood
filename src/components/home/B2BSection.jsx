@@ -18,14 +18,14 @@ export default function B2BSection() {
     setError('');
 
     if (!email) {
-      setError('Please enter your email address');
+      setError(t('b2b.emailRequired'));
       return;
     }
 
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setError('Please enter a valid email address');
+      setError(t('b2b.emailInvalid'));
       return;
     }
 
@@ -41,7 +41,7 @@ export default function B2BSection() {
       setEmail('');
       setBusinessName('');
     } catch (err) {
-      setError('Something went wrong. Please try again.');
+      setError(t('b2b.errorMessage'));
       console.error('B2B submission error:', err);
     } finally {
       setIsSubmitting(false);
@@ -54,15 +54,15 @@ export default function B2BSection() {
         <div className={`text-center ${isRTL ? 'direction-rtl' : ''}`}>
           {/* Heading */}
           <h2 className="font-playfair text-3xl lg:text-4xl font-bold text-white mb-4">
-            For Business Partners
+            {t('b2b.title')}
           </h2>
 
           <p className="text-white/90 text-lg lg:text-xl mb-8 max-w-2xl mx-auto leading-relaxed">
-            Are you a restaurant owner looking to enhance your customer experience with self-heating food packaging?
+            {t('b2b.description')}
           </p>
 
           <p className="text-white/80 mb-10 max-w-xl mx-auto">
-            Join our email waiting list, and our team will reach out to you with tailored solutions, updates, and collaboration opportunities.
+            {t('b2b.subtitle')}
           </p>
 
           {/* Form */}
@@ -74,26 +74,26 @@ export default function B2BSection() {
                   type="text"
                   value={businessName}
                   onChange={(e) => setBusinessName(e.target.value)}
-                  placeholder="Business Name (optional)"
-                  className="w-full px-6 py-4 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                  placeholder={t('b2b.businessNamePlaceholder')}
+                  className={`w-full px-6 py-4 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all ${isRTL ? 'text-right' : 'text-left'}`}
                 />
 
                 {/* Email */}
-                <div className="flex flex-col sm:flex-row gap-3">
+                <div className={`flex flex-col sm:flex-row gap-3 ${isRTL ? 'sm:flex-row-reverse' : ''}`}>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Your business email"
+                    placeholder={t('b2b.emailPlaceholder')}
                     required
-                    className="flex-1 px-6 py-4 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                    className={`flex-1 px-6 py-4 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all ${isRTL ? 'text-right' : 'text-left'}`}
                   />
                   <button
                     type="submit"
                     disabled={isSubmitting}
                     className="px-8 py-4 bg-primary hover:bg-primary-hover text-white font-semibold rounded-full transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                   >
-                    {isSubmitting ? 'Joining...' : 'Join Waiting List'}
+                    {isSubmitting ? t('b2b.joining') : t('b2b.joinWaitingList')}
                   </button>
                 </div>
               </div>
@@ -103,19 +103,19 @@ export default function B2BSection() {
               )}
 
               <p className="mt-4 text-white/60 text-sm">
-                We respect your privacy. No spam, just valuable updates.
+                {t('b2b.privacyNote')}
               </p>
             </form>
           ) : (
             <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 max-w-md mx-auto border border-white/20">
               <div className="w-16 h-16 mx-auto mb-4 bg-green-500/20 rounded-full flex items-center justify-center">
-                <span className="text-green-400 text-3xl">✓</span>
+                <span className="text-green-400 text-3xl">&#10003;</span>
               </div>
               <h3 className="text-xl font-semibold text-white mb-2">
-                Thank You for Your Interest!
+                {t('b2b.successTitle')}
               </h3>
               <p className="text-white/80">
-                We've added you to our B2B waiting list. Our team will reach out soon with tailored solutions for your business.
+                {t('b2b.successMessage')}
               </p>
             </div>
           )}
