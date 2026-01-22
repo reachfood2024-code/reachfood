@@ -93,11 +93,14 @@ export default function Dashboard() {
   const ordersData = useQuery(api.orders.list, { limit: 50 });
   const emailsData = useQuery(api.metrics.emails, { limit: 100 });
   const subscriptionsData = useQuery(api.subscriptions.list, { limit: 50 });
+  const b2bLeadsData = useQuery(api.b2bLeads.list, { limit: 50 });
 
   // Convex mutations
   const updateOrderStatus = useMutation(api.orders.updateStatus);
   const updateSubscriptionStatus = useMutation(api.subscriptions.updateStatus);
   const deleteOrderMutation = useMutation(api.orders.deleteOrder);
+  const updateB2BStatus = useMutation(api.b2bLeads.updateStatus);
+  const deleteB2BLead = useMutation(api.b2bLeads.deleteLead);
 
   // Check if data is loading
   const loading = metricsData === undefined || ordersData === undefined;
@@ -989,6 +992,92 @@ export default function Dashboard() {
               columns={emailColumns}
               data={emailSubscriptions}
             />
+          </div>
+        </div>
+
+        {/* B2B Leads */}
+        <div className="mb-6">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-heading/10">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="font-playfair text-xl font-semibold text-heading">B2B Leads</h3>
+                <p className="text-sm text-heading-light mt-1">
+                  Restaurant & business partner inquiries ({b2bLeadsData?.total || 0} total)
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-700">
+                  New: {b2bLeadsData?.leads?.filter(l => l.status === 'new').length || 0}
+                </span>
+                <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">
+                  Converted: {b2bLeadsData?.leads?.filter(l => l.status === 'converted').length || 0}
+                </span>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[800px]">
+                <thead>
+                  <tr className="border-b border-heading/10">
+                    <th className="text-left text-xs font-semibold text-heading-light uppercase tracking-wider py-3 px-2">Email</th>
+                    <th className="text-left text-xs font-semibold text-heading-light uppercase tracking-wider py-3 px-2">Business</th>
+                    <th className="text-left text-xs font-semibold text-heading-light uppercase tracking-wider py-3 px-2">Source</th>
+                    <th className="text-left text-xs font-semibold text-heading-light uppercase tracking-wider py-3 px-2">Status</th>
+                    <th className="text-left text-xs font-semibold text-heading-light uppercase tracking-wider py-3 px-2">Date</th>
+                    <th className="text-left text-xs font-semibold text-heading-light uppercase tracking-wider py-3 px-2">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(!b2bLeadsData?.leads || b2bLeadsData.leads.length === 0) ? (
+                    <tr>
+                      <td colSpan={6} className="py-8 text-center text-heading-light">
+                        No B2B leads yet
+                      </td>
+                    </tr>
+                  ) : (
+                    b2bLeadsData.leads.map((lead) => (
+                      <tr key={lead.id} className="border-b border-heading/5 hover:bg-cream/50 transition-colors">
+                        <td className="py-3 px-2 text-sm text-heading">{lead.email}</td>
+                        <td className="py-3 px-2 text-sm text-heading">{lead.businessName}</td>
+                        <td className="py-3 px-2 text-sm text-heading-light">{lead.source}</td>
+                        <td className="py-3 px-2">
+                          <select
+                            value={lead.status}
+                            onChange={(e) => updateB2BStatus({ id: lead.id, status: e.target.value })}
+                            className={`px-2 py-1 rounded-lg text-xs font-medium border-none cursor-pointer focus:ring-2 focus:ring-primary/30 ${
+                              lead.status === 'new' ? 'bg-blue-100 text-blue-700' :
+                              lead.status === 'contacted' ? 'bg-yellow-100 text-yellow-700' :
+                              lead.status === 'qualified' ? 'bg-purple-100 text-purple-700' :
+                              lead.status === 'converted' ? 'bg-green-100 text-green-700' :
+                              'bg-gray-100 text-gray-700'
+                            }`}
+                          >
+                            <option value="new">New</option>
+                            <option value="contacted">Contacted</option>
+                            <option value="qualified">Qualified</option>
+                            <option value="converted">Converted</option>
+                            <option value="not_interested">Not Interested</option>
+                          </select>
+                        </td>
+                        <td className="py-3 px-2 text-sm text-heading-light">{lead.date}</td>
+                        <td className="py-3 px-2">
+                          <button
+                            onClick={() => {
+                              if (window.confirm('Delete this lead?')) {
+                                deleteB2BLead({ id: lead.id });
+                              }
+                            }}
+                            className="px-2 py-1 text-xs text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition-colors"
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 

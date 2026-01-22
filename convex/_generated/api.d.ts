@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as b2bLeads from "../b2bLeads.js";
 import type * as metrics from "../metrics.js";
 import type * as orders from "../orders.js";
 import type * as subscriptions from "../subscriptions.js";
@@ -20,6 +21,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  b2bLeads: typeof b2bLeads;
   metrics: typeof metrics;
   orders: typeof orders;
   subscriptions: typeof subscriptions;
