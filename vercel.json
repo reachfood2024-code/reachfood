@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/api/ga4", "destination": "/api/ga4" },
     { "source": "/(.*)", "destination": "/" }
   ]
 }

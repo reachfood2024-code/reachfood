@@ -1,6 +1,8 @@
 // Admin Dashboard - Analytics Overview for Investors
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery, useMutation } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
 import MetricCard from '../../components/admin/MetricCard';
 import LineChart from '../../components/admin/LineChart';
 import AreaChart from '../../components/admin/AreaChart';
@@ -10,7 +12,8 @@ import { useAdminAuth } from '../../components/admin/AdminAuth';
 // Fallback mock data for when API is unavailable
 import { dashboardData as mockData } from '../../data/dashboardMockData';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1';
+// GA4 API URL (Vercel serverless function)
+const GA4_API_URL = '/api/ga4';
 
 // LocalStorage keys for persistence
 const ORDER_STATUS_KEY = 'reachfood_order_statuses';
@@ -66,90 +69,39 @@ const clearAllData = () => {
 
 export default function Dashboard() {
   const { handleLogout } = useAdminAuth();
-  const [dateRange, setDateRange] = useState('30');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [apiStatus, setApiStatus] = useState('checking'); // 'live', 'mock', 'checking'
-  const [data, setData] = useState(null);
+  const [dateRange, setDateRange] = useState(30);
   const [orderStatuses, setOrderStatuses] = useState(loadSavedStatuses);
   const [revenueAdjustment, setRevenueAdjustment] = useState(loadRevenueAdjustment);
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
   // Subscriptions State
-  const [subscriptions, setSubscriptions] = useState([]);
-  const [subscriptionStats, setSubscriptionStats] = useState({});
   const [subscriptionFilter, setSubscriptionFilter] = useState('all');
   const [subscriptionSearch, setSubscriptionSearch] = useState('');
 
   // GA4 Data State
   const [ga4Data, setGa4Data] = useState(null);
-  const [ga4Status, setGa4Status] = useState('checking'); // 'connected', 'disconnected', 'checking'
+  const [ga4Status, setGa4Status] = useState('checking');
   const [ga4Loading, setGa4Loading] = useState(true);
   const [ga4Error, setGa4Error] = useState(null);
 
-  // Fetch data from API
-  useEffect(() => {
-    async function fetchData() {
-      setLoading(true);
-      setError(null);
+  // Convex queries
+  const metricsData = useQuery(api.metrics.summary, { range: dateRange });
+  const trendsData = useQuery(api.metrics.trends, { range: dateRange });
+  const productsData = useQuery(api.metrics.products, { range: dateRange });
+  const trafficData = useQuery(api.metrics.traffic, { range: dateRange });
+  const ordersData = useQuery(api.orders.list, { limit: 50 });
+  const emailsData = useQuery(api.metrics.emails, { limit: 100 });
+  const subscriptionsData = useQuery(api.subscriptions.list, { limit: 50 });
 
-      try {
-        // Fetch all data in parallel
-        const [metricsRes, trendsRes, productsRes, trafficRes, ordersRes, emailsRes, subscriptionsRes] = await Promise.all([
-          fetch(`${API_URL}/metrics/summary?range=${dateRange}`),
-          fetch(`${API_URL}/metrics/trends?range=${dateRange}`),
-          fetch(`${API_URL}/metrics/products?range=${dateRange}`),
-          fetch(`${API_URL}/metrics/traffic?range=${dateRange}`),
-          fetch(`${API_URL}/orders?limit=8`),
-          fetch(`${API_URL}/metrics/emails?limit=100`),
-          fetch(`${API_URL}/subscriptions?limit=50`)
-        ]);
+  // Convex mutations
+  const updateOrderStatus = useMutation(api.orders.updateStatus);
+  const updateSubscriptionStatus = useMutation(api.subscriptions.updateStatus);
+  const deleteOrderMutation = useMutation(api.orders.deleteOrder);
 
-        // Check if all responses are OK
-        if (!metricsRes.ok || !trendsRes.ok || !productsRes.ok || !trafficRes.ok || !ordersRes.ok || !emailsRes.ok) {
-          throw new Error('API request failed');
-        }
-
-        const [metrics, trends, products, traffic, orders, emails, subscriptionsData] = await Promise.all([
-          metricsRes.json(),
-          trendsRes.json(),
-          productsRes.json(),
-          trafficRes.json(),
-          ordersRes.json(),
-          emailsRes.json(),
-          subscriptionsRes.ok ? subscriptionsRes.json() : { data: { subscriptions: [], stats: {} } }
-        ]);
-
-        // Set subscriptions data
-        if (subscriptionsData.data) {
-          setSubscriptions(subscriptionsData.data.subscriptions || []);
-          setSubscriptionStats(subscriptionsData.data.stats || {});
-        }
-
-        setData({
-          metrics: metrics.data.metrics,
-          ...trends.data,
-          ...products.data,
-          ...traffic.data,
-          ...orders.data,
-          ...emails.data
-        });
-        setApiStatus('live');
-        setError(null);
-      } catch (err) {
-        console.warn('API unavailable, using mock data:', err.message);
-        setError('Using demo data - API not connected');
-        setApiStatus('mock');
-        // Use mock data as fallback
-        setData(mockData);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchData();
-  }, [dateRange]);
+  // Check if data is loading
+  const loading = metricsData === undefined || ordersData === undefined;
+  const apiStatus = metricsData ? 'live' : 'mock';
 
   // Fetch GA4 data
   useEffect(() => {
@@ -158,26 +110,44 @@ export default function Dashboard() {
       setGa4Error(null);
 
       try {
-        // First check GA4 connection status
-        const statusRes = await fetch(`${API_URL}/ga4/status`);
+        // Check GA4 connection status
+        const statusRes = await fetch(`${GA4_API_URL}?endpoint=status`);
         const statusData = await statusRes.json();
 
         if (!statusData.data?.connected) {
           setGa4Status('disconnected');
-          setGa4Error(statusData.data?.message || 'GA4 not configured');
+          setGa4Error(statusData.data?.message || statusData.error?.message || 'GA4 not configured');
           setGa4Loading(false);
           return;
         }
 
-        // Fetch GA4 summary data
-        const summaryRes = await fetch(`${API_URL}/ga4/summary?range=${dateRange}`);
+        // Fetch all GA4 data in parallel
+        const [realtimeRes, overviewRes, trafficRes, pagesRes, devicesRes, countriesRes] = await Promise.all([
+          fetch(`${GA4_API_URL}?endpoint=realtime`),
+          fetch(`${GA4_API_URL}?endpoint=overview&range=${dateRange}`),
+          fetch(`${GA4_API_URL}?endpoint=traffic&range=${dateRange}`),
+          fetch(`${GA4_API_URL}?endpoint=pages&range=${dateRange}`),
+          fetch(`${GA4_API_URL}?endpoint=devices&range=${dateRange}`),
+          fetch(`${GA4_API_URL}?endpoint=countries&range=${dateRange}`)
+        ]);
 
-        if (!summaryRes.ok) {
-          throw new Error('Failed to fetch GA4 data');
-        }
+        const [realtime, overview, traffic, pages, devices, countries] = await Promise.all([
+          realtimeRes.json(),
+          overviewRes.json(),
+          trafficRes.json(),
+          pagesRes.json(),
+          devicesRes.json(),
+          countriesRes.json()
+        ]);
 
-        const summaryData = await summaryRes.json();
-        setGa4Data(summaryData.data);
+        setGa4Data({
+          realtime: realtime.data,
+          overview: overview.data,
+          trafficSources: traffic.data?.trafficSources || [],
+          topPages: pages.data?.topPages || [],
+          devices: devices.data?.devices || [],
+          countries: countries.data?.countries || []
+        });
         setGa4Status('connected');
       } catch (err) {
         console.warn('GA4 data fetch failed:', err.message);
@@ -191,25 +161,21 @@ export default function Dashboard() {
     fetchGA4Data();
   }, [dateRange]);
 
-  // Handle order status change with revenue sync
+  // Handle order status change
   const handleStatusChange = async (orderId, newStatus) => {
     // Find the order to get its amount
-    const currentData = data || mockData;
-    const order = (currentData.recentOrders || []).find(o => o.id === orderId);
+    const currentOrders = ordersData?.recentOrders || [];
+    const order = currentOrders.find(o => o.id === orderId);
     const orderAmount = order ? Number(order.amount) : 0;
 
-    // Get the current status (from saved statuses or original order status)
+    // Get the current status
     const currentStatus = orderStatuses[orderId] || (order ? order.status : null);
 
-    // Calculate revenue adjustment based on status transition
+    // Calculate revenue adjustment
     let adjustment = 0;
-
-    // If changing TO completed from any non-completed status, add revenue
     if (newStatus === 'completed' && currentStatus !== 'completed') {
       adjustment = orderAmount;
-    }
-    // If changing FROM completed to any other status (especially cancelled), remove revenue
-    else if (currentStatus === 'completed' && newStatus !== 'completed') {
+    } else if (currentStatus === 'completed' && newStatus !== 'completed') {
       adjustment = -orderAmount;
     }
 
@@ -225,49 +191,51 @@ export default function Dashboard() {
     setOrderStatuses(updatedStatuses);
     saveStatuses(updatedStatuses);
 
-    // Try to update via API
+    // Update via Convex
     try {
-      await fetch(`${API_URL}/orders/${orderId}/status`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus })
-      });
+      await updateOrderStatus({ orderNumber: orderId, status: newStatus });
     } catch (err) {
-      console.warn('API update failed, status saved locally:', err.message);
+      console.warn('Status update failed:', err.message);
+    }
+  };
+
+  // Handle order deletion
+  const handleDeleteOrder = async (orderId) => {
+    if (!window.confirm(`Are you sure you want to delete order ${orderId}? This cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      await deleteOrderMutation({ orderNumber: orderId });
+      // Remove from local status cache
+      const updatedStatuses = { ...orderStatuses };
+      delete updatedStatuses[orderId];
+      setOrderStatuses(updatedStatuses);
+      saveStatuses(updatedStatuses);
+    } catch (err) {
+      console.error('Failed to delete order:', err.message);
+      alert('Failed to delete order: ' + err.message);
     }
   };
 
   // Handle subscription status change
   const handleSubscriptionStatusChange = async (subscriptionId, newStatus) => {
     try {
-      await fetch(`${API_URL}/subscriptions/${subscriptionId}/status`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus })
-      });
-
-      // Update local state
-      setSubscriptions(prev =>
-        prev.map(sub =>
-          sub.id === subscriptionId ? { ...sub, status: newStatus } : sub
-        )
-      );
-
-      // Update stats
-      setSubscriptionStats(prev => {
-        const oldStatus = subscriptions.find(s => s.id === subscriptionId)?.status;
-        if (oldStatus && oldStatus !== newStatus) {
-          return {
-            ...prev,
-            [oldStatus]: Math.max(0, (parseInt(prev[oldStatus]) || 0) - 1),
-            [newStatus]: (parseInt(prev[newStatus]) || 0) + 1
-          };
-        }
-        return prev;
-      });
+      await updateSubscriptionStatus({ subscriptionNumber: subscriptionId, status: newStatus });
     } catch (err) {
       console.warn('Failed to update subscription status:', err.message);
     }
+  };
+
+  // Get subscriptions from Convex
+  const subscriptions = subscriptionsData?.subscriptions || [];
+  const subscriptionStats = {
+    total: subscriptions.length,
+    pending: subscriptions.filter(s => s.status === 'pending').length,
+    contacted: subscriptions.filter(s => s.status === 'contacted').length,
+    confirmed: subscriptions.filter(s => s.status === 'confirmed').length,
+    active: subscriptions.filter(s => s.status === 'active').length,
+    cancelled: subscriptions.filter(s => s.status === 'cancelled').length,
   };
 
   // Filter subscriptions
@@ -282,7 +250,7 @@ export default function Dashboard() {
     return matchesStatus && matchesSearch;
   });
 
-  // Reset all order data to fresh state
+  // Reset all order data
   const handleResetData = () => {
     if (window.confirm('Are you sure you want to reset all order data? This will clear all status changes and revenue adjustments.')) {
       clearAllData();
@@ -291,25 +259,31 @@ export default function Dashboard() {
     }
   };
 
-  // Use mock data while loading or if no data
-  const displayData = data || mockData;
-  const { metrics, userBehaviorTrend, ordersTrend, addToCartTrend, emailSubmissionsTrend, ordersByProduct, trafficSources } = displayData;
+  // Build display data from Convex queries
+  const metrics = metricsData?.metrics || mockData.metrics;
+  const userBehaviorTrend = trendsData?.userBehaviorTrend || mockData.userBehaviorTrend;
+  const ordersTrend = trendsData?.ordersTrend || mockData.ordersTrend;
+  const addToCartTrend = trendsData?.addToCartTrend || mockData.addToCartTrend;
+  const emailSubmissionsTrend = trendsData?.emailSubmissionsTrend || mockData.emailSubmissionsTrend;
+  const ordersByProduct = productsData?.ordersByProduct || mockData.ordersByProduct;
+  const trafficSources = trafficData?.trafficSources || mockData.trafficSources;
+  const emailSubscriptions = emailsData?.emailSubscriptions || mockData.emailSubscriptions || [];
 
   // Apply saved statuses to orders
-  const recentOrders = (displayData.recentOrders || []).map(order => ({
+  const recentOrders = (ordersData?.recentOrders || []).map(order => ({
     ...order,
     status: orderStatuses[order.id] || order.status
   }));
 
-  // Filter orders based on status and search
+  // Filter orders
   const filteredOrders = recentOrders.filter(order => {
     const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
     const matchesSearch = searchQuery === '' ||
       order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.phone.includes(searchQuery) ||
-      order.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.country.toLowerCase().includes(searchQuery.toLowerCase());
+      (order.phone || '').includes(searchQuery) ||
+      (order.location || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (order.country || '').toLowerCase().includes(searchQuery.toLowerCase());
     return matchesStatus && matchesSearch;
   });
 
@@ -319,33 +293,28 @@ export default function Dashboard() {
     pending: recentOrders.filter(o => o.status === 'pending').length,
     processing: recentOrders.filter(o => o.status === 'processing').length,
     shipped: recentOrders.filter(o => o.status === 'shipped').length,
-    completed: recentOrders.filter(o => o.status === 'completed').length,
+    completed: recentOrders.filter(o => o.status === 'completed' || o.status === 'delivered').length,
     cancelled: recentOrders.filter(o => o.status === 'cancelled').length,
   };
 
-  // Calculate dynamic metrics based on order statuses
-  const adjustedRevenue = (metrics.revenue.value || 0) + revenueAdjustment;
-  const totalOrders = recentOrders.length;
+  // Calculate adjusted metrics
+  const adjustedRevenue = (metrics.revenue?.value || 0) + revenueAdjustment;
   const completedOrders = orderStats.completed;
-  // Conversion rate = (completed orders / total users) * 100
-  const baseConversionRate = metrics.conversionRate.value || 0;
-  const adjustedConversionRate = totalOrders > 0
-    ? ((completedOrders / metrics.totalUsers.value) * 100).toFixed(1)
-    : baseConversionRate;
+  const totalUsers = metrics.totalUsers?.value || 0;
+  const adjustedConversionRate = totalUsers > 0
+    ? ((completedOrders / totalUsers) * 100).toFixed(1)
+    : metrics.conversionRate?.value || 0;
 
   // Table column configurations
   const orderColumns = [
     { key: 'id', label: 'Order ID' },
     { key: 'customer', label: 'Customer' },
     { key: 'product', label: 'Product' },
-    { key: 'phone', label: 'Phone' },
-    { key: 'location', label: 'Location' },
-    { key: 'country', label: 'Country' },
     {
       key: 'amount',
       label: 'Amount',
       align: 'right',
-      render: (value) => `$${Number(value).toFixed(2)}`
+      render: (value, row) => `${row.currency === 'SAR' ? 'SAR ' : '$'}${Number(value).toFixed(2)}`
     },
     {
       key: 'status',
@@ -358,7 +327,19 @@ export default function Dashboard() {
         />
       )
     },
-    { key: 'date', label: 'Date' }
+    { key: 'date', label: 'Date' },
+    {
+      key: 'actions',
+      label: 'Actions',
+      render: (_, row) => (
+        <button
+          onClick={() => handleDeleteOrder(row.id)}
+          className="px-2 py-1 text-xs text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition-colors"
+        >
+          Delete
+        </button>
+      )
+    }
   ];
 
   const trafficColumns = [
@@ -430,13 +411,13 @@ export default function Dashboard() {
               </div>
               <select
                 value={dateRange}
-                onChange={(e) => setDateRange(e.target.value)}
+                onChange={(e) => setDateRange(Number(e.target.value))}
                 className="px-4 py-2 bg-cream rounded-lg text-sm text-heading border-none focus:ring-2 focus:ring-primary/30 cursor-pointer"
               >
-                <option value="7">Last 7 Days</option>
-                <option value="30">Last 30 Days</option>
-                <option value="90">Last 90 Days</option>
-                <option value="365">This Year</option>
+                <option value={7}>Last 7 Days</option>
+                <option value={30}>Last 30 Days</option>
+                <option value={90}>Last 90 Days</option>
+                <option value={365}>This Year</option>
               </select>
               <Link
                 to="/"
@@ -472,48 +453,48 @@ export default function Dashboard() {
         {/* Metric Cards Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
           <MetricCard
-            label={metrics.totalUsers.label}
-            value={metrics.totalUsers.value}
-            change={metrics.totalUsers.change}
-            trend={metrics.totalUsers.trend}
-            period={metrics.totalUsers.period}
+            label={metrics.totalUsers?.label || "Total Users"}
+            value={metrics.totalUsers?.value || 0}
+            change={metrics.totalUsers?.change || 0}
+            trend={metrics.totalUsers?.trend || "up"}
+            period={metrics.totalUsers?.period || `vs previous ${dateRange} days`}
           />
           <MetricCard
-            label={metrics.addToCartEvents.label}
-            value={metrics.addToCartEvents.value}
-            change={metrics.addToCartEvents.change}
-            trend={metrics.addToCartEvents.trend}
-            period={metrics.addToCartEvents.period}
+            label={metrics.addToCartEvents?.label || "Add to Cart"}
+            value={metrics.addToCartEvents?.value || 0}
+            change={metrics.addToCartEvents?.change || 0}
+            trend={metrics.addToCartEvents?.trend || "up"}
+            period={metrics.addToCartEvents?.period || `vs previous ${dateRange} days`}
           />
           <MetricCard
-            label={metrics.emailSubmissions.label}
-            value={metrics.emailSubmissions.value}
-            change={metrics.emailSubmissions.change}
-            trend={metrics.emailSubmissions.trend}
-            period={metrics.emailSubmissions.period}
+            label={metrics.emailSubmissions?.label || "Email Signups"}
+            value={metrics.emailSubmissions?.value || 0}
+            change={metrics.emailSubmissions?.change || 0}
+            trend={metrics.emailSubmissions?.trend || "up"}
+            period={metrics.emailSubmissions?.period || `vs previous ${dateRange} days`}
           />
           <MetricCard
-            label={metrics.completedOrders.label}
+            label={metrics.completedOrders?.label || "Orders"}
             value={completedOrders}
-            change={metrics.completedOrders.change}
-            trend={metrics.completedOrders.trend}
-            period={metrics.completedOrders.period}
+            change={metrics.completedOrders?.change || 0}
+            trend={metrics.completedOrders?.trend || "up"}
+            period={metrics.completedOrders?.period || `vs previous ${dateRange} days`}
           />
           <MetricCard
-            label={metrics.revenue.label}
+            label={metrics.revenue?.label || "Revenue"}
             value={adjustedRevenue}
-            change={metrics.revenue.change}
+            change={metrics.revenue?.change || 0}
             trend={revenueAdjustment >= 0 ? 'up' : 'down'}
-            period={metrics.revenue.period}
-            prefix={metrics.revenue.prefix}
+            period={metrics.revenue?.period || `vs previous ${dateRange} days`}
+            prefix={metrics.revenue?.prefix || "$"}
           />
           <MetricCard
-            label={metrics.conversionRate.label}
+            label={metrics.conversionRate?.label || "Conversion"}
             value={parseFloat(adjustedConversionRate)}
-            change={metrics.conversionRate.change}
-            trend={metrics.conversionRate.trend}
-            period={metrics.conversionRate.period}
-            suffix={metrics.conversionRate.suffix}
+            change={metrics.conversionRate?.change || 0}
+            trend={metrics.conversionRate?.trend || "up"}
+            period={metrics.conversionRate?.period || `vs previous ${dateRange} days`}
+            suffix={metrics.conversionRate?.suffix || "%"}
           />
         </div>
 
@@ -665,39 +646,6 @@ export default function Dashboard() {
                   </div>
                 </div>
               </div>
-
-              {/* E-commerce Metrics (if available) */}
-              {ga4Data.ecommerce && (ga4Data.ecommerce.transactions > 0 || ga4Data.ecommerce.addToCarts > 0) && (
-                <div className="mt-6">
-                  <h4 className="font-semibold text-heading mb-4">E-commerce (GA4)</h4>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                    <div className="bg-white rounded-2xl p-4 shadow-sm border border-heading/10">
-                      <p className="text-xs text-heading-light mb-1">Transactions</p>
-                      <p className="text-xl font-bold text-heading">{ga4Data.ecommerce.transactions}</p>
-                    </div>
-                    <div className="bg-white rounded-2xl p-4 shadow-sm border border-heading/10">
-                      <p className="text-xs text-heading-light mb-1">Revenue</p>
-                      <p className="text-xl font-bold text-heading">${ga4Data.ecommerce.revenue}</p>
-                    </div>
-                    <div className="bg-white rounded-2xl p-4 shadow-sm border border-heading/10">
-                      <p className="text-xs text-heading-light mb-1">Avg Order</p>
-                      <p className="text-xl font-bold text-heading">${ga4Data.ecommerce.avgOrderValue}</p>
-                    </div>
-                    <div className="bg-white rounded-2xl p-4 shadow-sm border border-heading/10">
-                      <p className="text-xs text-heading-light mb-1">Items Viewed</p>
-                      <p className="text-xl font-bold text-heading">{ga4Data.ecommerce.itemsViewed}</p>
-                    </div>
-                    <div className="bg-white rounded-2xl p-4 shadow-sm border border-heading/10">
-                      <p className="text-xs text-heading-light mb-1">Add to Carts</p>
-                      <p className="text-xl font-bold text-heading">{ga4Data.ecommerce.addToCarts}</p>
-                    </div>
-                    <div className="bg-white rounded-2xl p-4 shadow-sm border border-heading/10">
-                      <p className="text-xs text-heading-light mb-1">Checkouts</p>
-                      <p className="text-xl font-bold text-heading">{ga4Data.ecommerce.checkouts}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
             </>
           ) : (
             <div className="bg-white rounded-2xl p-8 shadow-sm border border-heading/10 text-center">
@@ -710,7 +658,7 @@ export default function Dashboard() {
                 <>
                   <p className="text-heading-light mb-2">GA4 is not connected</p>
                   <p className="text-sm text-heading-light">
-                    {ga4Error || 'Configure GA4_PROPERTY_ID and credentials in your server environment'}
+                    {ga4Error || 'Configure GA4_PROPERTY_ID and credentials in your Vercel environment'}
                   </p>
                 </>
               )}
@@ -1032,14 +980,14 @@ export default function Dashboard() {
               <div>
                 <h3 className="font-playfair text-xl font-semibold text-heading">Email Subscriptions</h3>
                 <p className="text-sm text-heading-light mt-1">
-                  Newsletter subscribers ({displayData.emailSubscriptions?.length || 0} total)
+                  Newsletter subscribers ({emailSubscriptions.length || 0} total)
                 </p>
               </div>
             </div>
 
             <DataTable
               columns={emailColumns}
-              data={displayData.emailSubscriptions || []}
+              data={emailSubscriptions}
             />
           </div>
         </div>
@@ -1060,8 +1008,8 @@ export default function Dashboard() {
           </p>
           <p className="text-xs text-heading-light mt-1">
             {apiStatus === 'live'
-              ? `Live data from ${API_URL.replace('/api/v1', '')}`
-              : 'Demo mode - Check API connection'}
+              ? 'Live data from Convex'
+              : 'Demo mode - Check Convex connection'}
           </p>
         </div>
       </main>

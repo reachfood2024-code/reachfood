@@ -1,7 +1,12 @@
-// Analytics Service - Tracks user events and sends to backend + GA4
+// Analytics Service - Tracks user events and sends to Convex backend + GA4
 import { v4 as uuidv4 } from 'uuid';
+import { ConvexHttpClient } from 'convex/browser';
+import { api } from '../../convex/_generated/api';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1';
+const CONVEX_URL = import.meta.env.VITE_CONVEX_URL;
+
+// Initialize Convex HTTP client for analytics
+const convexClient = CONVEX_URL ? new ConvexHttpClient(CONVEX_URL) : null;
 
 // Track if analytics has been initialized
 let isInitialized = false;
@@ -67,44 +72,6 @@ function getDeviceType() {
   return 'desktop';
 }
 
-// Send tracking request with retry logic
-async function track(endpoint, data, retries = 2) {
-  const payload = {
-    visitorId: getVisitorId(),
-    sessionId: getSessionId(),
-    timestamp: new Date().toISOString(),
-    ...data
-  };
-
-  for (let attempt = 0; attempt <= retries; attempt++) {
-    try {
-      const response = await fetch(`${API_URL}/track/${endpoint}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      if (response.ok) {
-        return true;
-      }
-
-      // Don't retry on client errors (4xx)
-      if (response.status >= 400 && response.status < 500) {
-        console.warn(`Analytics tracking rejected (${response.status}):`, endpoint);
-        return false;
-      }
-    } catch (error) {
-      if (attempt === retries) {
-        console.warn('Analytics tracking failed after retries:', endpoint, error.message);
-        return false;
-      }
-      // Wait before retry (exponential backoff)
-      await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
-    }
-  }
-  return false;
-}
-
 // ============================================
 // PUBLIC TRACKING METHODS
 // ============================================
@@ -126,17 +93,23 @@ export const analytics = {
       const sessionId = getSessionId();
       const visitorId = getVisitorId();
 
-      const success = await track('session', {
-        sessionId,
-        visitorId,
-        userAgent: navigator.userAgent,
-        referrer: document.referrer,
-        landingPage: window.location.pathname,
-        deviceType: getDeviceType()
-      });
+      if (!convexClient) {
+        console.warn('Convex not configured, skipping session tracking');
+        return { sessionId, visitorId };
+      }
 
-      if (success) {
+      try {
+        await convexClient.mutation(api.tracking.startSession, {
+          sessionId,
+          visitorId,
+          userAgent: navigator.userAgent,
+          referrer: document.referrer || undefined,
+          landingPage: window.location.pathname,
+          deviceType: getDeviceType()
+        });
         isInitialized = true;
+      } catch (error) {
+        console.warn('Session tracking failed:', error.message);
       }
 
       return { sessionId, visitorId };
@@ -147,12 +120,10 @@ export const analytics = {
 
   // Check if analytics API is reachable
   async healthCheck() {
+    if (!convexClient) return false;
     try {
-      const response = await fetch(`${API_URL}/metrics/summary?range=1`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      });
-      return response.ok;
+      await convexClient.query(api.metrics.summary, { range: 1 });
+      return true;
     } catch {
       return false;
     }
@@ -164,23 +135,39 @@ export const analytics = {
   },
 
   // Track page view
-  pageView(pagePath, pageTitle) {
-    track('pageview', {
-      pagePath: pagePath || window.location.pathname,
-      pageTitle: pageTitle || document.title
-    });
+  async pageView(pagePath, pageTitle) {
+    if (!convexClient) return;
+
+    try {
+      await convexClient.mutation(api.tracking.trackPageView, {
+        sessionId: getSessionId(),
+        visitorId: getVisitorId(),
+        pagePath: pagePath || window.location.pathname,
+        pageTitle: pageTitle || document.title
+      });
+    } catch (error) {
+      console.warn('Page view tracking failed:', error.message);
+    }
   },
 
   // Track add to cart - sends to both backend and GA4
-  addToCart(product, quantity = 1) {
-    // Backend tracking
-    track('cart', {
-      eventType: 'add',
-      productId: product.id,
-      productName: product.name,
-      quantity,
-      unitPrice: product.price
-    });
+  async addToCart(product, quantity = 1) {
+    // Backend tracking via Convex
+    if (convexClient) {
+      try {
+        await convexClient.mutation(api.tracking.trackCart, {
+          sessionId: getSessionId(),
+          visitorId: getVisitorId(),
+          eventType: 'add',
+          productId: product.id,
+          productName: product.name,
+          quantity,
+          unitPrice: product.price
+        });
+      } catch (error) {
+        console.warn('Cart tracking failed:', error.message);
+      }
+    }
 
     // GA4 e-commerce tracking
     trackGA4('add_to_cart', {
@@ -196,15 +183,23 @@ export const analytics = {
   },
 
   // Track remove from cart - sends to both backend and GA4
-  removeFromCart(product, quantity = 1) {
-    // Backend tracking
-    track('cart', {
-      eventType: 'remove',
-      productId: product.id,
-      productName: product.name,
-      quantity,
-      unitPrice: product.price
-    });
+  async removeFromCart(product, quantity = 1) {
+    // Backend tracking via Convex
+    if (convexClient) {
+      try {
+        await convexClient.mutation(api.tracking.trackCart, {
+          sessionId: getSessionId(),
+          visitorId: getVisitorId(),
+          eventType: 'remove',
+          productId: product.id,
+          productName: product.name,
+          quantity,
+          unitPrice: product.price
+        });
+      } catch (error) {
+        console.warn('Cart tracking failed:', error.message);
+      }
+    }
 
     // GA4 e-commerce tracking
     trackGA4('remove_from_cart', {
@@ -220,9 +215,20 @@ export const analytics = {
   },
 
   // Track email signup - sends to both backend and GA4
-  emailSignup(email, source = 'footer') {
-    // Backend tracking
-    track('email', { email, source });
+  async emailSignup(email, source = 'footer') {
+    // Backend tracking via Convex
+    if (convexClient) {
+      try {
+        await convexClient.mutation(api.tracking.trackEmail, {
+          sessionId: getSessionId(),
+          visitorId: getVisitorId(),
+          email,
+          source
+        });
+      } catch (error) {
+        console.warn('Email tracking failed:', error.message);
+      }
+    }
 
     // GA4 lead generation event
     trackGA4('generate_lead', {
@@ -279,12 +285,20 @@ export const analytics = {
   },
 
   // Track generic event
-  event(eventType, eventData = {}) {
-    track('event', {
-      eventType,
-      eventData,
-      pagePath: window.location.pathname
-    });
+  async event(eventType, eventData = {}) {
+    if (!convexClient) return;
+
+    try {
+      await convexClient.mutation(api.tracking.trackEvent, {
+        sessionId: getSessionId(),
+        visitorId: getVisitorId(),
+        eventType,
+        eventData,
+        pagePath: window.location.pathname
+      });
+    } catch (error) {
+      console.warn('Event tracking failed:', error.message);
+    }
   },
 
   // Get IDs for order creation

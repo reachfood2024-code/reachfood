@@ -1,0 +1,4 @@
+{
+  "project": "reach-food/reachfood-backend",
+  "functions": "../reachfood/convex/"
+}
